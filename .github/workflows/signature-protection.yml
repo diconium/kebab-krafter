@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Close Pull Request
-      run: gh pr close --comment "Pull Requests are not allowed to cla-signatures.\nPlease submit a PR to the main branch\nAuto-closing pull request."
+      run: gh pr close ${{ github.event.number }} --comment "Pull Requests are not allowed to cla-signatures.\nPlease submit a PR to the main branch\nAuto-closing pull request."
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
