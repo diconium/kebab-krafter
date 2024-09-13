@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A parrot",
+  "type": "object",
+  "required": [
+    "petType",
+    "id",
+    "name",
+    "wordCount"
+  ],
+  "properties": {
+    "petType": {
+      "const": "parrot"
+    },
+    "id": {
+      "description": "UUID",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the parrot",
+      "type": "string",
+      "examples": [
+        "Tarzan",
+        "Ms. Lane",
+        "Loro"
+      ]
+    },
+    "wordCount": {
+      "description": "How many words the parrot is able to pronounce",
+      "type": "integer"
+    },
+    "dateOfBirth": {
+      "description": "Date of birthday (ISO 8601), or null if unknown",
+      "type": "string",
+      "format": "date-time",
+      "example": "2020-07-02T14:23:04.000Z"
+    }
+  }
+}

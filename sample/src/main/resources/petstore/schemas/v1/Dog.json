@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A dog",
+  "type": "object",
+  "required": [
+    "petType",
+    "id",
+    "name",
+    "color",
+    "weight",
+    "trainingLevel",
+    "breed"
+  ],
+  "properties": {
+    "petType": {
+      "const": "dog"
+    },
+    "id": {
+      "description": "UUID",
+      "type": "string"
+    },
+    "name": {
+      "description": "Name of the dog",
+      "type": "string",
+      "examples": [
+        "Cerberus",
+        "Mr. Crowley",
+        "Lulu"
+      ]
+    },
+    "color": {
+      "description": "The dog fur color(s)",
+      "type": "string",
+      "example": [
+        "brown"
+      ]
+    },
+    "weight": {
+      "description": "The dog weight in kilos",
+      "type": "number"
+    },
+    "trainingLevel": {
+      "description": "A 0~10 indicating the level of training of the dog",
+      "type": "integer"
+    },
+    "breed": {
+      "description": "The dog type",
+      "example": "Shiba Inu",
+      "type": "string"
+    },
+    "dateOfBirth": {
+      "description": "Date of birthday (ISO 8601), or null if unknown",
+      "type": "string",
+      "format": "date-time",
+      "example": "2020-07-02T14:23:04.000Z"
+    }
+  }
+}

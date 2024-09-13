@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Response for the get pets endpoint",
+  "type": "object",
+  "required": [
+    "pets",
+    "count",
+    "page"
+  ],
+  "properties": {
+    "pets": {
+      "type": "array",
+      "description": "A list of available pets",
+      "items": {
+        "$ref": "./Pet.json"
+      }
+    },
+    "count": {
+      "description": "Number of pets matching the criteria",
+      "type": "integer"
+    },
+    "page": {
+      "description": "This page number",
+      "type": "integer"
+    }
+  }
+}

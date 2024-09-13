@@ -1,0 +1,134 @@
+openapi: '3.0.3'
+
+info:
+    title: An example swagger lightly inspired by the swagger Pet Store
+    version: '1.0.0'
+
+servers:
+    -   description: Local
+        url: http://localhost:8080
+
+paths:
+    /v1/pet:
+        get:
+            tags: [ general ]
+            summary: 'Provides a list of pets from the store'
+            parameters:
+                -   in: query
+                    name: type
+                    description: 'The type of pets to return'
+                    required: false
+                    example: cat
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    description: 'Endpoint pagination'
+                    required: false
+                    schema:
+                        type: integer
+            responses:
+                '200':
+                    description: Successful operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: './schemas/v1/PetsResponse.json'
+        post:
+            tags: [ admin ]
+            summary: 'Adds a new pet to the store'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: './schemas/v1/PostPetRequest.json'
+            responses:
+                '200':
+                    description: Successful operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: './schemas/v1/Pet.json'
+    /v1/pet/{id}:
+        parameters:
+            -   name: id
+                in: path
+                description: The unique ID of the pet (UUID).
+                required: true
+                schema:
+                    type: string
+                    format: uuid
+                    example: 123e4567-e89b-12d3-a456-426655440000
+        get:
+            tags: [ general ]
+            summary: 'Returns specific pet'
+            responses:
+                '200':
+                    description: Successful operation
+                    headers:
+                        X-Random: # just a random number to test the header feature
+                            schema:
+                                type: integer
+                    content:
+                        application/json:
+                            schema:
+                                $ref: './schemas/v1/Pet.json'
+        delete:
+            tags: [ admin ]
+            summary: 'Removes the PET from the database'
+            responses:
+                '204':
+                    description: Successful operation
+
+
+    /v1/pet/{id}/photo:
+        parameters:
+            -   name: id
+                in: path
+                description: The unique ID of the pet (UUID).
+                required: true
+                schema:
+                    type: string
+                    format: uuid
+                    example: 123e4567-e89b-12d3-a456-426655440000
+        get:
+            tags: [ general ]
+            summary: 'Returns a photo of the pet'
+            responses:
+                '200':
+                    description: successful operation
+                    content:
+                        image/png:
+                            schema:
+                                type: string
+                                format: binary
+                '404':
+                    description: No photos of this pet available
+
+    /v1/pet/{id}/pdf:
+        parameters:
+            -   name: id
+                in: path
+                description: The unique ID of the pet (UUID).
+                required: true
+                schema:
+                    type: string
+                    format: uuid
+                    example: 123e4567-e89b-12d3-a456-426655440000
+        get:
+            tags: [ general ]
+            summary: 'Returns a PDF with all the info about the pet'
+            responses:
+                '200':
+                    description: successful operation
+                    headers:
+                        Content-Disposition:
+                            schema:
+                                type: string
+                    content:
+                        application/pdf:
+                            schema:
+                                type: string
+                                format: binary
+                '404':
+                    description: Pet not found

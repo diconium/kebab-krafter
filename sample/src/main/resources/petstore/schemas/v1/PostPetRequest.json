@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Request to add a pet to the store",
+  "type": "object",
+  "required": [
+    "name",
+    "petType"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name of the pet",
+      "type": "string",
+      "examples": [
+        "Fluffy",
+        "Ms. Lane",
+        "Lulu"
+      ]
+    },
+    "petType": {
+      "description": "The type of pet",
+      "type": "string",
+      "enum": [
+        "DOG",
+        "CAT",
+        "PARROT"
+      ]
+    },
+    "dateOfBirth": {
+      "description": "Date of birthday (ISO 8601), or null if unknown",
+      "type": "string",
+      "format": "date-time",
+      "example": "2020-07-02T14:23:04.000Z"
+    }
+  }
+}

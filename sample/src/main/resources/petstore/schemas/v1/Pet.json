@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A pet in the store",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "./Cat.json" },
+    { "$ref": "./Dog.json" },
+    { "$ref": "./Parrot.json" }
+  ]
+}
