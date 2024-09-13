@@ -1,0 +1,19 @@
+name: "Block PRs to cla-signatures"
+
+on:
+  pull_request:
+    branches: 
+      - 'cla-signatures'
+
+jobs:
+  blockPr:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        
+      - name: Close Pull Request
+        run: gh pr close ${{ github.event.number }} --comment "Pull Requests are not allowed to cla-signatures. Auto-closing this pull request."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
