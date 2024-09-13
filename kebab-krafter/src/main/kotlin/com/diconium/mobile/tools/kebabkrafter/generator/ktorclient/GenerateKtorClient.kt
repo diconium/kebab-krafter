@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
+package com.diconium.mobile.tools.kebabkrafter.generator.ktorclient
 
 import com.diconium.mobile.tools.kebabkrafter.Log
 import com.diconium.mobile.tools.kebabkrafter.generator.Transformers
@@ -7,18 +7,12 @@ import com.diconium.mobile.tools.kebabkrafter.generator.logName
 import com.diconium.mobile.tools.kebabkrafter.generator.preGenerate
 import java.io.File
 
-/**
- * Helper to generate server + data classes together
- */
-fun generateKtorServerFor(
+fun generateKtorClientFor(
 	packageName: String,
 	baseDir: File,
 	specFile: File,
-	contextSpec: ServerContextSpec,
 	transformers: Transformers = Transformers(),
-	installFunction: String = "installGeneratedRoutes",
 ) {
-
 	val (dataSpecs, controllers) = preGenerate(packageName, baseDir, specFile, transformers)
 
 	Log.d("Generating data class models:")
@@ -28,21 +22,13 @@ fun generateKtorServerFor(
 		outputDirectory = baseDir,
 	).generateDataModelFiles()
 
-	Log.d("Generating KtorServerUseCases:")
-	val ctrlGenerator = KtorServerUseCasesGenerator(
+	Log.d("Generating KtorClientUseCases:")
+	val ctrlGenerator = KtorClientUseCasesGenerator(
 		basePackage = packageName,
-		context = contextSpec.asClassName(),
 	)
 	controllers.forEach { ctrl ->
 		Log.d("- ${ctrl.logName}")
 		ctrlGenerator.generate(ctrl).writeTo(baseDir)
 	}
 
-	Log.d("Generating fun Routes.$installFunction():")
-	val routeGenerator = KtorServerRoutesGenerator(
-		basePackage = packageName,
-		context = contextSpec,
-		outputDirectory = baseDir,
-	)
-	routeGenerator.generate(installFunction, controllers)
 }

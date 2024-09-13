@@ -1,15 +1,11 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
 import com.diconium.mobile.tools.kebabkrafter.generator.*
-import com.diconium.mobile.tools.kebabkrafter.generator.AUTO_GENERATOR_WARNING
-import com.diconium.mobile.tools.kebabkrafter.generator.PoetController
 import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
-import com.diconium.mobile.tools.kebabkrafter.models.UrlType
 import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import java.io.InputStream
 
-class KtorControllerGenerator(private val basePackage: String, private val context: ClassName) {
+class KtorServerUseCasesGenerator(private val basePackage: String, private val context: ClassName) {
 
 	fun generate(controller: KtorController): FileSpec {
 		val poet = PoetController(basePackage, controller)
@@ -23,7 +19,7 @@ class KtorControllerGenerator(private val basePackage: String, private val conte
 		val supportClass = TypeSpec.classBuilder(poet.supportClassName)
 			.apply { makeSupportClass(controller) }
 			.build()
-			.takeIf { controller.response.requiresSupportClass }
+			.takeIf { controller.response.serverRequiresSupportClass }
 
 		return FileSpec.builder(poet.controllerClassName)
 			.indent()
@@ -50,7 +46,7 @@ class KtorControllerGenerator(private val basePackage: String, private val conte
 			addParameter("body", it)
 		}
 
-		val response = if (controller.response.requiresSupportClass) {
+		val response = if (controller.response.serverRequiresSupportClass) {
 			poet.supportClassName
 		} else {
 			when (controller.response.type) {
@@ -123,14 +119,4 @@ class KtorControllerGenerator(private val basePackage: String, private val conte
 			)
 		}
 	}
-}
-
-private fun UrlType.toTypeName(): TypeName {
-	return when (format) {
-		UrlType.Format.String -> String::class.asTypeName()
-		UrlType.Format.Int -> Int::class.asTypeName()
-		UrlType.Format.Boolean -> Boolean::class.asTypeName()
-		UrlType.Format.Float -> Float::class.asTypeName()
-		UrlType.Format.StringArray -> List::class.asTypeName().parameterizedBy(String::class.asTypeName())
-	}.copy(nullable = required.not())
 }

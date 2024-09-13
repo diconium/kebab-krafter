@@ -30,5 +30,3 @@ data class KtorController(
 	)
 }
 
-val KtorController.Response.requiresSupportClass: Boolean
-	get() = this.headers.isNotEmpty()

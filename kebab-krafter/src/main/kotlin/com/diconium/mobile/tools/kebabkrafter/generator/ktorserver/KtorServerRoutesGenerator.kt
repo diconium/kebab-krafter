@@ -13,9 +13,9 @@ import io.ktor.server.routing.*
 import java.io.File
 import kotlin.reflect.KClass
 
-class KtorRouteGenerator(
+class KtorServerRoutesGenerator(
 	private val basePackage: String,
-	private val context: ContextSpec,
+	private val context: ServerContextSpec,
 	private val outputDirectory: File,
 ) {
 
@@ -97,7 +97,7 @@ class KtorRouteGenerator(
 		}
 		val resultField = if (
 			controller.response.body == null &&
-			controller.response.requiresSupportClass.not() &&
+			controller.response.serverRequiresSupportClass.not() &&
 			controller.response.type == ResponseType.Json
 		) {
 			""
@@ -115,12 +115,6 @@ class KtorRouteGenerator(
 	}
 
 	private val serviceLocatorClass = ClassName(basePackage, "ServiceLocator")
-}
-
-private fun CodeBlock.Builder.controlFlow(controlFlow: String, vararg args: Any?, block: CodeBlock.Builder.() -> Unit) {
-	beginControlFlow(controlFlow, args)
-	block()
-	endControlFlow()
 }
 
 private fun UrlType.toValue(input: String): String {
@@ -156,7 +150,7 @@ private fun CodeBlock.Builder.generateBinaryResponse(response: KtorController.Re
 	} ?: ""
 
 	controlFlow("call.respondOutputStream$contentType") {
-		val bodyFlow = if (response.requiresSupportClass) {
+		val bodyFlow = if (response.serverRequiresSupportClass) {
 			"result.body.use { incoming ->"
 		} else {
 			"result.use { incoming ->"

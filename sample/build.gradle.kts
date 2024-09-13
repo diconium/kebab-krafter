@@ -1,7 +1,7 @@
 import com.diconium.mobile.tools.kebabkrafter.generator.KtorMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
+import com.diconium.mobile.tools.kebabkrafter.generator.DefaultKtorControllerMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.KtorController
 import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 
@@ -38,6 +38,10 @@ dependencies {
 	implementation("io.ktor:ktor-server-swagger:$ktorVersion")
 	implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
 	implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
+	implementation("io.ktor:ktor-client-core:$ktorVersion")
+	implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
@@ -106,6 +110,12 @@ val ktorMapper = KtorMapper { shortestPath: Int, dataSpecs: Map<String, BaseSpec
 			packageName = "controllers.other.${ctrl.packageName.replace("controllers", "")}",
 		)
 	}
+}
+
+ktorClient {
+	log = true
+	packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client"
+	specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
 }
 
 ktorServer {
