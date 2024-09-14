@@ -1,5 +1,11 @@
 # Coding Guidelines
 
+
+## ---> TODO: @ronaldo
+
+
+----
+_______ example content
 - You can validate that your code complies with these guidelines by running `stuff/php-format.py validate`
 - Tabs, no spaces
 - End of line should should be Unix style (`\n`), not Windows style (`\r\n`)

@@ -1,9 +1,8 @@
 ---
 name: Feature request
-about: Add your feature request
-title: 'Network Generator Feature Request'
+about: Create a Feature request and help improving Kebab Krafter.
+title: '[FEATURE] Kebab Krafter Feature Request'
 labels: 'feature'
-
 ---
 
 **Is your feature request related to a problem? Please describe.**
@@ -24,3 +23,5 @@ Are there any alternatives? Pleaes describe them.
 **Additional context**
 
 Add screenshots, scribbles, or any other context to describe this feature request.
+
+**✓ - I have checked open and closed feature requests before opening this issue, and my feature is not listed.**

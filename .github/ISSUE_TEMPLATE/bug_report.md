@@ -1,19 +1,19 @@
 ---
 name: Bug report
-about: Create a report and help improving this project
-title: 'Network Generator Bug Report'
+about: Create a Bug Report and help improving Kebab Krafter.
+title: '[BUG] Kebab Krafter Bug Report'
 labels: 'bug'
 ---
 
-**Describe the bug**
+**Describe the Bug**
 
 Describe the bug in a clear and concise way. Add screenshots if available.
 
-**Reproduce steps**
+**Steps to reproduce the Bug**
 
-Describe all steps to reproduce the behavior:
+Describe all required steps to reproduce the buggy behavior:
 1. Go to '...'
-2. Click on '....'
+2. Tap on '....'
 3. Scroll down to '....'
 4. See error
 
@@ -28,3 +28,5 @@ If applicable, add screenshots to help explain your problem.
 **Additional context**
 
 Give additional context like runtime environment, versions, cloud provider, etc.
+
+**✓ - I have checked open and closed issues before opening this report, and my bug is not listed.**
