@@ -111,4 +111,4 @@ Kebab Krafter is licensed under [Apache License Version 2](https://github.com/di
 
 ## Contributing to Kebab Krafter
 
-To contribute to the project, please see [Contribution documentation](https://github.com/diconium/kebab-krafter/CONTRIBUTING.md) for details.
+To contribute to the project, please see [Contribution documentation](https://github.com/diconium/kebab-krafter/blob/main/CONTRIBUTING.md) for details.
