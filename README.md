@@ -107,8 +107,14 @@ See also the list of [contributors](https://github.com/diconium/kebab-krafter/co
 this project.
 
 ## License
-Kebab Krafter is licensed under [Apache License Version 2](https://github.com/diconium/kebab-krafter/blob/main/LICENSE.txt). 
+Kebab Krafter is released under [Apache License Version 2](https://github.com/diconium/kebab-krafter/blob/main/LICENSE.txt). 
 
 ## Contributing to Kebab Krafter
 
 To contribute to the project, please see [Contribution documentation](https://github.com/diconium/kebab-krafter/blob/main/CONTRIBUTING.md) for details.
+
+<br>
+
+---
+
+© 2024 diconium GmbH. All rights reserved.
