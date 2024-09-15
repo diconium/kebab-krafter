@@ -18,16 +18,15 @@ Kebab Krafter is available for:
 ### Table of Contents
 
 - [About](#about)
-- [Getting Started](#getting_started)
+- [Getting Started](#-getting-started)
 - [Documentation](docs/index.htm)
-- [Usage](#usage)
-- [Authors](#️authors)
+- [Authors](#authors)
 - [License](#license)
 - [Contribution](#contributing-to-kebab-krafter)
 
 <br/>
 
-## About <a name = "about"></a>
+## About
 
 Did you ever spend plenty of time on building network interface documented in large Swagger API descriptions?
 
@@ -38,7 +37,7 @@ Kebab Krafter provides a gradle plugin to auto-generate network interfaces from 
 Kebab Krafter will also support Swift code development in the future, a Swift Package Manager Plugin is coming soon.
 
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## 🏁 Getting Started
 
 Run Kebab Krafter gradle plugin by adding it to the gradle instructions in 
 `build.gradle.kts`:
@@ -100,16 +99,16 @@ With above generated code in place, all you need to do is to implement the inter
 
 Compare the `sample/` app's <i>"Pet Store"</i> for a full example.
 
-## Authors <a name = "authors"></a>
+## Authors
 
 - [@rvp-diconium](https://github.com/rvp-diconium)
 
 See also the list of [contributors](https://github.com/diconium/kebab-krafter/contributors) who participated in
 this project.
 
-## License <a name="license"></a>
+## License
 Kebab Krafter is licensed under [Apache License Version 2](https://github.com/diconium/kebab-krafter/LICENSE.txt). 
 
-## Contributing to Kebab Krafter <a name="contributing"></a>
+## Contributing to Kebab Krafter
 
 To contribute to the project, please see [Contribution documentation](https://github.com/diconium/kebab-krafter/CONTRIBUTING.md) for details.
