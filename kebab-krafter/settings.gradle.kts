@@ -1,4 +1,5 @@
-rootProject.name = "Kebab Krafter Generator"
+//rootProject.name = "Kebab Krafter Generator"
+rootProject.name = "kebab-krafter"
 
 plugins {
 

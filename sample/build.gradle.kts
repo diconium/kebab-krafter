@@ -1,7 +1,7 @@
 import com.diconium.mobile.tools.kebabkrafter.generator.KtorMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
+import com.diconium.mobile.tools.kebabkrafter.generator.DefaultKtorControllerMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.KtorController
 import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 
