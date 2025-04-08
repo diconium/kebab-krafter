@@ -9,12 +9,12 @@ import io.ktor.http.*
 import kotlin.random.Random
 
 class GetPetIdController(
-	private val findPetInDb: suspend (String) -> Pet?,
+    private val findPetInDb: suspend (String) -> Pet?,
 ) : GetPetId {
 
-	override suspend fun CallScope.execute(id: String): GetPetIdResponse {
-		return findPetInDb(id)?.let {
-			GetPetIdResponse(String(Random.nextBytes(36)), it)
-		} ?: throw PetStoreException(HttpStatusCode.NotFound)
-	}
+    override suspend fun CallScope.execute(id: String): GetPetIdResponse {
+        return findPetInDb(id)?.let {
+            GetPetIdResponse(String(Random.nextBytes(36)), it)
+        } ?: throw PetStoreException(HttpStatusCode.NotFound)
+    }
 }

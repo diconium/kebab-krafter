@@ -1,5 +1,5 @@
 pluginManagement {
-	includeBuild("../kebab-krafter")
+    includeBuild("../kebab-krafter")
 }
 
 rootProject.name = "Kebab Krafter Sample"

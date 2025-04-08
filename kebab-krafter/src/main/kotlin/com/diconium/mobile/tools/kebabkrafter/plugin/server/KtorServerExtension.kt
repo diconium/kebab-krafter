@@ -31,45 +31,45 @@ import javax.inject.Inject
  */
 open class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
 
-	/**
-	 * True to enable logging
-	 */
-	var log: Boolean = false
+    /**
+     * True to enable logging
+     */
+    var log: Boolean = false
 
-	/**
-	 * Base package name for the generated files.
-	 */
-	val packageName: Property<String> = objects.property(String::class.java)
+    /**
+     * Base package name for the generated files.
+     */
+    val packageName: Property<String> = objects.property(String::class.java)
 
-	/**
-	 * Swagger YAML spec file
-	 */
-	val specFile: Property<File> = objects.property(File::class.java)
+    /**
+     * Swagger YAML spec file
+     */
+    val specFile: Property<File> = objects.property(File::class.java)
 
-	/**
-	 * Output folder for the generated files (defaults to 'build/generated/sources/ktorServer/').
-	 * Note: only the default folder gets automatically added to the target sourceSet.
-	 */
-	val outputFolder: Property<File> = objects.property(File::class.java)
+    /**
+     * Output folder for the generated files (defaults to 'build/generated/sources/ktorServer/').
+     * Note: only the default folder gets automatically added to the target sourceSet.
+     */
+    val outputFolder: Property<File> = objects.property(File::class.java)
 
-	/**
-	 * Specification for the custom context where and API call is executed
-	 */
-	internal val contextSpec: ContextSpecExtension = objects.newInstance(ContextSpecExtension::class.java)
+    /**
+     * Specification for the custom context where and API call is executed
+     */
+    internal val contextSpec: ContextSpecExtension = objects.newInstance(ContextSpecExtension::class.java)
 
-	/**
-	 * Specification for the custom context where and API call is executed
-	 */
-	fun contextSpec(action: Action<ContextSpecExtension>) {
-		action.execute(contextSpec)
-	}
+    /**
+     * Specification for the custom context where and API call is executed
+     */
+    fun contextSpec(action: Action<ContextSpecExtension>) {
+        action.execute(contextSpec)
+    }
 
-	internal val transformers = Transformers()
+    internal val transformers = Transformers()
 
-	/**
-	 * Specification for the custom transformations for the API
-	 */
-	fun transformers(action: Action<Transformers>) {
-		action.execute(transformers)
-	}
+    /**
+     * Specification for the custom transformations for the API
+     */
+    fun transformers(action: Action<Transformers>) {
+        action.execute(transformers)
+    }
 }

@@ -10,16 +10,16 @@ import kotlin.reflect.KClass
 
 object RealServices : ServiceLocator {
 
-	private val controllers = module {
-		single<GetPet> { GetPetController(Database.getAllPets) }
-		single<GetPetId> { GetPetIdController(Database.findPet) }
-		single<DeletePetId> { DeletePetIdController(Database.deletePet) }
-		single<PostPet> { PostPetController(Database.createPet) }
-		single<GetPetIdPhoto> { GetPetIdPhotoController() }
-		single<GetPetIdPdf> { GetPetIdPdfController() }
-	}
+    private val controllers = module {
+        single<GetPet> { GetPetController(Database.getAllPets) }
+        single<GetPetId> { GetPetIdController(Database.findPet) }
+        single<DeletePetId> { DeletePetIdController(Database.deletePet) }
+        single<PostPet> { PostPetController(Database.createPet) }
+        single<GetPetIdPhoto> { GetPetIdPhotoController() }
+        single<GetPetIdPdf> { GetPetIdPdfController() }
+    }
 
-	private val koin = koinApplication { modules(controllers) }.koin
+    private val koin = koinApplication { modules(controllers) }.koin
 
-	override fun <T : Any> getService(type: KClass<T>): T = koin.get(type)
+    override fun <T : Any> getService(type: KClass<T>): T = koin.get(type)
 }

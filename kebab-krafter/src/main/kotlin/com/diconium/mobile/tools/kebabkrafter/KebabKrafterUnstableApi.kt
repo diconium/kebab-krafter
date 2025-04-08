@@ -3,11 +3,11 @@ package com.diconium.mobile.tools.kebabkrafter
 @RequiresOptIn(message = MESSAGE, level = RequiresOptIn.Level.ERROR)
 @Retention(AnnotationRetention.BINARY)
 @Target(
-	AnnotationTarget.CLASS,
-	AnnotationTarget.FUNCTION,
-	AnnotationTarget.FIELD,
-	AnnotationTarget.PROPERTY,
-	AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.CONSTRUCTOR,
 )
 annotation class KebabKrafterUnstableApi
 

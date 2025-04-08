@@ -11,37 +11,35 @@ import kotlin.test.assertTrue
 
 class GetPetControllerTest {
 
-	@Test
-	fun `happy path`() = runBlocking {
-		// given
-		val getPetsFromDb: suspend () -> PetsResponse = { PetsResponse(emptyList(), 0, 0) }
+    @Test
+    fun `happy path`() = runBlocking {
+        // given
+        val getPetsFromDb: suspend () -> PetsResponse = { PetsResponse(emptyList(), 0, 0) }
 
-		// when
-		val scope = FakeCallScope()
-		val sut = create(getPetsFromDb)
-		val response = with(sut) { scope.execute(null, null) }
+        // when
+        val scope = FakeCallScope()
+        val sut = create(getPetsFromDb)
+        val response = with(sut) { scope.execute(null, null) }
 
-		// then
-		assertEquals(PetsResponse(emptyList(), 0, 0), response)
-	}
+        // then
+        assertEquals(PetsResponse(emptyList(), 0, 0), response)
+    }
 
-	@Test
-	fun `failure case`() = runBlocking {
-		// given
-		val getPetsFromDb: suspend () -> PetsResponse = { throw IOException("no internet") }
+    @Test
+    fun `failure case`() = runBlocking {
+        // given
+        val getPetsFromDb: suspend () -> PetsResponse = { throw IOException("no internet") }
 
-		// when
-		val scope = FakeCallScope()
-		val sut = create(getPetsFromDb)
-		val response = runCatching { with(sut) { scope.execute(null, null) } }
+        // when
+        val scope = FakeCallScope()
+        val sut = create(getPetsFromDb)
+        val response = runCatching { with(sut) { scope.execute(null, null) } }
 
-		// then
-		assertTrue(response.isFailure)
-	}
+        // then
+        assertTrue(response.isFailure)
+    }
 
-	private fun create(
-		getPetsFromDb: suspend () -> PetsResponse,
-	) = GetPetController(
-		getPetsFromDb = getPetsFromDb,
-	)
+    private fun create(getPetsFromDb: suspend () -> PetsResponse) = GetPetController(
+        getPetsFromDb = getPetsFromDb,
+    )
 }
