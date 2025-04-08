@@ -22,11 +22,16 @@ object GenerateKtorServer {
 				return@afterEvaluate
 			}
 
-			val sourceFolder = File(target.projectDir, "build/generated/sources/ktorServer/")
-			target.sourceSets { container ->
-				container.main.configure { sourceSet ->
-					sourceSet.java.srcDirs(sourceFolder)
-					sourceSet.kotlin.srcDirs(sourceFolder)
+			val sourceFolder = if (ktorServerInput.outputFolder.isPresent) {
+				ktorServerInput.outputFolder.get()
+			} else {
+				File(target.projectDir, "build/generated/sources/ktorServer/").also {
+					target.sourceSets { container ->
+						container.main.configure { sourceSet ->
+							sourceSet.java.srcDirs(it)
+							sourceSet.kotlin.srcDirs(it)
+						}
+					}
 				}
 			}
 

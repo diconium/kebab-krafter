@@ -47,6 +47,12 @@ open class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
 	val specFile: Property<File> = objects.property(File::class.java)
 
 	/**
+	 * Output folder for the generated files (defaults to 'build/generated/sources/ktorServer/').
+	 * Note: only the default folder gets automatically added to the target sourceSet.
+	 */
+	val outputFolder: Property<File> = objects.property(File::class.java)
+
+	/**
 	 * Specification for the custom context where and API call is executed
 	 */
 	internal val contextSpec: ContextSpecExtension = objects.newInstance(ContextSpecExtension::class.java)
@@ -59,6 +65,7 @@ open class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
 	}
 
 	internal val transformers = Transformers()
+
 	/**
 	 * Specification for the custom transformations for the API
 	 */
