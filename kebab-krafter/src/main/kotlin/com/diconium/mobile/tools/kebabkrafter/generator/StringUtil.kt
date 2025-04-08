@@ -4,3 +4,4 @@ import com.diconium.mobile.tools.kebabkrafter.generator.StringUtil.capitalizeFir
 import com.diconium.mobile.tools.kebabkrafter.generator.StringUtil.toCamelCase
 
 internal fun String.toPascalCase() = capitalizeFirstWord2(toCamelCase(this))
+internal fun String.toCamelCase() = toCamelCase(this)
