@@ -49,7 +49,7 @@ open class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
 	/**
 	 * Specification for the custom context where and API call is executed
 	 */
-	val contextSpec: ContextSpecExtension = objects.newInstance(ContextSpecExtension::class.java)
+	internal val contextSpec: ContextSpecExtension = objects.newInstance(ContextSpecExtension::class.java)
 
 	/**
 	 * Specification for the custom context where and API call is executed
@@ -58,8 +58,7 @@ open class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
 		action.execute(contextSpec)
 	}
 
-	val transformers = Transformers()
-
+	internal val transformers = Transformers()
 	/**
 	 * Specification for the custom transformations for the API
 	 */

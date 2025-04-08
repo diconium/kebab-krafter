@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -33,12 +34,12 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
-}
-
 kotlin {
-	jvmToolchain(17)
+	jvmToolchain(21)
+	compilerOptions {
+		jvmTarget.set(JvmTarget.JVM_21)
+		optIn.add("com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi")
+	}
 }
 
 licensee {
