@@ -29,7 +29,7 @@ fun generateKtorServerFor(
     var spec = SwaggerParser.parse("10.0.0.1", specFile)
 
     //region map and transforms the input
-    Log.d("Transforming endpoints:")
+    Log.d("Transforming Endpoints:")
     spec = spec.copy(
         endpoints = spec.endpoints.map { endpoint ->
             val before = endpoint.logName
@@ -44,16 +44,16 @@ fun generateKtorServerFor(
     val shortestPath = spec.endpoints.minByOrNull { it.path.size }!!.path.size
     Log.d("Shortest path length is: $shortestPath")
 
-    Log.d("Mapping endpoints to ktorControllers:")
-    var controllers = spec.endpoints.map { endpoint ->
-        transformers.ktorMapper.map(shortestPath, spec.dataSpecs, endpoint)
+    Log.d("Mapping Endpoints to ktorControllers:")
+    val initialControllers = spec.endpoints.map { endpoint ->
+        endpoint to transformers.ktorMapper.map(shortestPath, spec.dataSpecs, endpoint)
             .also { Log.d("- ${endpoint.logName} -> ${it.logName}") }
     }
 
     Log.d("Transforming KtorControllers:")
-    controllers = controllers.map { ctrl ->
+    val controllers = initialControllers.map { (endpoint, ctrl) ->
         val before = ctrl.logName
-        transformers.ktorTransformer.transform(ctrl)
+        transformers.ktorTransformer.transform(endpoint, ctrl)
             .also {
                 val after = it.logName
                 if (before != after) Log.d("- $after")

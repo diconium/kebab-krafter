@@ -67,14 +67,20 @@ ktlint {
 
 // here are examples of crazy manipulations possible with the KtorTransformer
 // but those are not being applied to the sample app
-private val ktorTransformer = KtorTransformer { ctrl ->
+private val ktorTransformer = KtorTransformer { endpoint, ctrl ->
     // this is not used in the sample app, but it's here mostly as an example
-    if (ctrl.route.startsWith("v")) {
-        val version = ctrl.route.take(2)
+
+    val version = endpoint.path
+        .firstOrNull()
+        .takeIf { it?.matches("v[0-9]+".toRegex()) == true }
+        ?.substring(1)
+        ?.toInt()
+
+    if (version != null) {
         println("transforming: ${ctrl.ktorFunction} ${ctrl.route}")
         ctrl.copy(
             route = ctrl.route.split("/").let { it.subList(1, it.size) }.joinToString("/"),
-            routeHeaders = listOf("X-Api-Version" to version),
+            routeHeaders = listOf("X-Api-Version" to "v$version"),
         )
     } else {
         ctrl

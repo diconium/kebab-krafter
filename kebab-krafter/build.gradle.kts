@@ -33,6 +33,12 @@ tasks.test {
     useJUnitPlatform()
 }
 
+afterEvaluate {
+    tasks.named("sourcesJar") {
+        enabled = false
+    }
+}
+
 kotlin {
     jvmToolchain(21)
     compilerOptions {
