@@ -32,9 +32,9 @@ import javax.inject.Inject
 open class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
 
     /**
-     * True to enable logging
+     * True to enable logging; false otherwise
      */
-    var log: Boolean = false
+    var log: Boolean = true
 
     /**
      * Base package name for the generated files.

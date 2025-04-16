@@ -26,10 +26,12 @@ fun generateKtorServerFor(
     }
 
     // parse the specification
+    Log.l("Parsing ${specFile.name}...")
     var spec = SwaggerParser.parse("10.0.0.1", specFile)
+    Log.l("Found ${spec.endpoints.size} endpoints with ${spec.dataSpecs.size} data models")
 
     //region map and transforms the input
-    Log.d("Transforming Endpoints:")
+    Log.l("Transforming Endpoints")
     spec = spec.copy(
         endpoints = spec.endpoints.map { endpoint ->
             val before = endpoint.logName
@@ -44,13 +46,13 @@ fun generateKtorServerFor(
     val shortestPath = spec.endpoints.minByOrNull { it.path.size }!!.path.size
     Log.d("Shortest path length is: $shortestPath")
 
-    Log.d("Mapping Endpoints to ktorControllers:")
+    Log.l("Mapping Endpoints to ktorControllers")
     val initialControllers = spec.endpoints.map { endpoint ->
         endpoint to transformers.ktorMapper.map(shortestPath, spec.dataSpecs, endpoint)
             .also { Log.d("- ${endpoint.logName} -> ${it.logName}") }
     }
 
-    Log.d("Transforming KtorControllers:")
+    Log.l("Transforming KtorControllers")
     val controllers = initialControllers.map { (endpoint, ctrl) ->
         val before = ctrl.logName
         transformers.ktorTransformer.transform(endpoint, ctrl)
@@ -62,14 +64,14 @@ fun generateKtorServerFor(
     //endregion
 
     //region Generate Kotlin code
-    Log.d("Generating data class models:")
+    Log.l("Generating data class models")
     DataClassesGenerator(
         basePackageName = packageName,
         spec.dataSpecs,
         outputDirectory = baseDir,
     ).generateDataModelFiles()
 
-    Log.d("Generating KtorControllers:")
+    Log.l("Generating KtorControllers")
     val ctrlGenerator = KtorControllerGenerator(
         basePackage = packageName,
         context = contextSpec.asClassName(),
@@ -79,7 +81,7 @@ fun generateKtorServerFor(
         ctrlGenerator.generate(ctrl).writeTo(baseDir)
     }
 
-    Log.d("Generating fun Routes.$installFunction():")
+    Log.l("Generating fun Routes.$installFunction()")
     val routeGenerator = KtorRouteGenerator(
         basePackage = packageName,
         context = contextSpec,
