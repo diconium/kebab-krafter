@@ -18,17 +18,6 @@ Available for:
 
 ---
 
-## 📝 Table of Contents
-
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Documentation](docs/index.htm)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Contributing](CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
-
 ## About
 
 Kebab-Krafter is a gradle plugin to auto-generate network interfaces from a set of swagger API documentation.
