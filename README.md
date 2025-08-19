@@ -16,49 +16,6 @@ Available for:
     <br> - Swift client (hopefully)
 </p>
 
-[//]: # (Alternative logos)
-[//]: # (<p align="center">)
-
-[//]: # (  <a href="docs/kebab-krafter-0.png" rel="noopener">)
-
-[//]: # (    <img width=200px height=200px src="docs/kebab-krafter-0.png" alt="Project logo"></a>)
-
-[//]: # (</p>)
-[//]: # (<p align="center">)
-
-[//]: # (  <a href="docs/kebab-krafter-1.png" rel="noopener">)
-
-[//]: # (    <img width=200px height=200px src="docs/kebab-krafter-1.png" alt="Project logo"></a>)
-
-[//]: # (</p>)
-
-[//]: # ()
-[//]: # (<p align="center">)
-
-[//]: # (  <a href="docs/kebab-krafter-2.png" rel="noopener">)
-
-[//]: # (    <img width=200px height=200px src="docs/kebab-krafter-2.png" alt="Project logo"></a>)
-
-[//]: # (</p>)
-
-[//]: # ()
-[//]: # (<p align="center">)
-
-[//]: # (  <a href="docs/kebab-krater-11.png" rel="noopener">)
-
-[//]: # (    <img width=200px height=200px src="docs/kebab-krater-11.png" alt="Project logo"></a>)
-
-[//]: # (</p>)
-
-[//]: # ()
-[//]: # (<p align="center">)
-
-[//]: # (  <a href="docs/kebab-krafter-22.png" rel="noopener">)
-
-[//]: # (    <img width=200px height=200px src="docs/kebab-krafter-22.png" alt="Project logo"></a>)
-
-[//]: # (</p>)
-
 ---
 
 ## 📝 Table of Contents
@@ -72,16 +29,16 @@ Available for:
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
-## 🧐 About <a name = "about"></a>
+## About
 
-A gradle plugin to auto-generate network interfaces from a set of swagger API documentation.
+Kebab-Krafter is a gradle plugin to auto-generate network interfaces from a set of swagger API documentation.
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## Getting Started <a name = "getting_started"></a>
 
 To start using the plugin just add to your `build.gradle.kts` file:
 
 ```kotlin
-id("com.diconium.mobile.tools.kebab-krafter") version "version"
+id("com.diconium.mobile.tools.kebab-krafter") version "latest_version"
 ```
 
 ### Generate Ktor Server
@@ -107,11 +64,48 @@ ktorServer {
 }
 ```
 
-From the example above the a `InstallRoutes.kt` is generated in the `root.package.name.for.the.generated.code` with an extension function for Ktor `fun Route.installGeneratedRoutes(locator: ServiceLocator)`
+and with that you can execute `./gradlew generateKtorServer` to auto-genearted a `Route.installGeneratedRoutes`, all the `data classes` using `kotlinx-serialization` and the interfaces for each endpoint in the following format:
 
-It also generates all the necessary `data class` models and controller `interfaces` that satisfy the API in a nicely unit testable way.
+```Kotlin
+public interface GetPathName {
+    public fun CallScope.execute(pathParameters, queryParameters, body) : ResponseBody
+}
+```
 
-The `contextSpec` is a joker card to extract any metadata needed from the `Ktor.ApplicationCall` before passing to the controller. In the sample app you can see it extracting the `accept-language` header into `Locale` object. Making the context an interface is advisable, so that it's trivial to unit test the controller by creating a `FakeContext()`
+From that you just have to implement the interfaces!
+
+#### The contextSpec
+
+The `contextSpec` is a "joker-card" to extract any metadata needed from the `Ktor.ApplicationCall` before passing to the controller. In the sample app you can see it extracting the `accept-language` header into a `Locale` object.
+
+In the snippet above the context was named `CallScope` in the package `com.myserver.api`, a simple example for it would be:
+
+```Kotlin
+interface CallScope {
+    val locale: Locale // define meta-data your controller needs from the request
+
+    companion object {
+
+        // define a factory function to create the object
+        fun from(call: ApplicationCall): CallScope = CallScopeImpl(call)
+    }
+}
+```
+
+Making this context an interface is advisable, so that it's trivial to unit test the controller by creating a `FakeContext()`
+
+```Kotlin
+// implement the real object separetely, to make it trivial to implement unit tests.
+private class CallScopeImpl(private val call: ApplicationCall) : CallScope {
+    override val locale: Locale by lazy {
+        call.request.acceptLanguage().toLocale()
+    }
+}
+```
+
+#### The ServiceLocator
+
+The generated `installGeneratedRoutes` receives a object of type `ServiceLocator` located in the same package of the `installGeneratedRoutes`.
 
 The `ServiceLocator` is a very simple `get<T>` interface that can be adapted to any dependency injection you want to use. For example using Koin it would be something like:
 
@@ -121,53 +115,13 @@ class KoinServiceLocator(private val koin: Koin) : ServiceLocator {
 }
 ```
 
-### Implement the Server
-
-With that generated code in place, all you gotta do is implement the interfaces and install the routes on the Ktor instance.
+### Further Examples
 
 Check the `sample/` app with the "Pet Store" for a full example.
 
-## 🔧 Running the tests <a name = "tests"></a>
-
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## 🎈 Usage <a name="usage"></a>
-
-Add notes about how to use the system.
-
-## Documentation
-
-Please see [documentation guide](https://docs)
-
-## 🚀 Deployment <a name = "deployment"></a>
-
-Add additional notes about how to deploy this on a live system.
-
-## ✍️ Authors <a name = "authors"></a>
+## Authors <a name = "authors"></a>
 
 - [@rvp-diconium](https://github.com/rvp-diconium)
 
 See also the list of [contributors](https://github.com/diconium/mcc-network-generator/contributors) who participated in
 this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- References

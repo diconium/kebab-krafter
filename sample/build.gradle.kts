@@ -4,6 +4,7 @@ import com.diconium.mobile.tools.kebabkrafter.generator.KtorMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
 import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 private val ktorVersion: String = "2.3.12"
 private val kotlinVersion: String = "1.9.24"
@@ -51,7 +52,11 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+        optIn.add("com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi")
+    }
 }
 
 ktlint {
