@@ -3,28 +3,28 @@
 [bundles]
 
 ktor-client = [
-	"ktor-client-core",
-	"ktor-client-okhttp",
-	"ktor-client-contentNegotiation",
-	"ktor-client-serialization",
-	"ktor-client-logging"
+    "ktor-client-core",
+    "ktor-client-okhttp",
+    "ktor-client-contentNegotiation",
+    "ktor-client-serialization",
+    "ktor-client-logging",
 ]
 
 ktor-server = [
-	"ktor-server-core",
-	"ktor-server-contentNegotiation",
-	"ktor-server-serialization",
-	"ktor-server-callLoggingJvm",
-	"ktor-server-callIdJvm",
-	"ktor-server-defaultHeadersJvm",
-	"ktor-server-compressionJvm",
-	"ktor-server-hostCommonJvm",
-	"ktor-server-statusPagesJvm",
-	"ktor-server-netty",
-	"ktor-server-configYaml",
-	"ktor-server-swagger",
-	"ktor-server-cors",
-	"ktor-server-resources"
+    "ktor-server-core",
+    "ktor-server-contentNegotiation",
+    "ktor-server-serialization",
+    "ktor-server-callLoggingJvm",
+    "ktor-server-callIdJvm",
+    "ktor-server-defaultHeadersJvm",
+    "ktor-server-compressionJvm",
+    "ktor-server-hostCommonJvm",
+    "ktor-server-statusPagesJvm",
+    "ktor-server-netty",
+    "ktor-server-configYaml",
+    "ktor-server-swagger",
+    "ktor-server-cors",
+    "ktor-server-resources",
 ]
 
 [plugins]
@@ -37,24 +37,20 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint_version" 
 
 [versions]
 
-kotlin_version = "1.9.25"
-##          ⬆ = "2.0.0"
-##          ⬆ = "2.0.10"
-kotlin_poet = "1.18.1"
-kotlinx_datetime_version = "0.6.0"
-ktor_version = "2.3.12"
-json_org_version = "20240303"
-snakeyaml_version = "2.2"
-swagger_parser_version = "2.1.22"
-gradle_plugin_version = "1.2.1"
-licensee_version = "1.11.0"
-ktlint_version = "12.1.1"
+kotlin_version = "2.2.10"
+kotlin_poet = "2.2.0"
+ktor_version = "3.2.3"
+json_org_version = "20250517"
+snakeyaml_version = "2.4"
+swagger_parser_version = "2.1.32"
+gradle_plugin_version = "1.3.1"
+licensee_version = "1.13.0"
+ktlint_version = "13.1.0"
 
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin_version" }
 kotlin-poet = { module = "com.squareup:kotlinpoet", version.ref = "kotlin_poet" }
-kotlin-dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx_datetime_version" }
 data-json = { module = "org.json:json", version.ref = "json_org_version" }
 data-yaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml_version" }
 swagger-parser = { module = "io.swagger.parser.v3:swagger-parser", version.ref = "swagger_parser_version" }

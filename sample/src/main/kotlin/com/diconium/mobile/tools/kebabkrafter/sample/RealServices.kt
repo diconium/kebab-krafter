@@ -1,9 +1,14 @@
 package com.diconium.mobile.tools.kebabkrafter.sample
 
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.DeletePetIdController
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetController
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetIdController
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetIdPdfController
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetIdPhotoController
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.PostPetController
 import com.diconium.mobile.tools.kebabkrafter.sample.db.Database
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.*
-import com.diconium.mobile.tools.kebabkrafter.sample.v1.controllers.*
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.reflect.KClass

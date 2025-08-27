@@ -363,38 +363,32 @@ object SwaggerParser {
     }
 }
 
-private fun JsonSchema.Item.asType(): SpecField.Type? {
-    return when (type) {
-        "string" -> when {
-            format == "date-time" -> SpecField.Type.Date
-            !enum.isNullOrEmpty() -> SpecField.Type.Enum(enum)
-            else -> SpecField.Type.String
-        }
-
-        "boolean" -> SpecField.Type.Boolean
-        "integer" -> SpecField.Type.Int
-        "number" -> SpecField.Type.Float
-        else -> null
+private fun JsonSchema.Item.asType(): SpecField.Type? = when (type) {
+    "string" -> when {
+        format == "date-time" -> SpecField.Type.Date
+        !enum.isNullOrEmpty() -> SpecField.Type.Enum(enum)
+        else -> SpecField.Type.String
     }
+
+    "boolean" -> SpecField.Type.Boolean
+    "integer" -> SpecField.Type.Int
+    "number" -> SpecField.Type.Float
+    else -> null
 }
 
-private fun Pair<String?, String?>.asType(): SpecField.Type? {
-    return when (first) {
-        "string" -> when (second) {
-            "date-time" -> SpecField.Type.Date
-            else -> SpecField.Type.String
-        }
-
-        "boolean" -> SpecField.Type.Boolean
-        "integer" -> SpecField.Type.Int
-        "number" -> SpecField.Type.Float
-        else -> null
+private fun Pair<String?, String?>.asType(): SpecField.Type? = when (first) {
+    "string" -> when (second) {
+        "date-time" -> SpecField.Type.Date
+        else -> SpecField.Type.String
     }
+
+    "boolean" -> SpecField.Type.Boolean
+    "integer" -> SpecField.Type.Int
+    "number" -> SpecField.Type.Float
+    else -> null
 }
 
-private fun File.relativePackageName(base: File): String {
-    return parentFile.relativeTo(base).path
-        .replace("../", "")
-        .replace("/", ".")
-        .replace("schemas", "models")
-}
+private fun File.relativePackageName(base: File): String = parentFile.relativeTo(base).path
+    .replace("../", "")
+    .replace("/", ".")
+    .replace("schemas", "models")

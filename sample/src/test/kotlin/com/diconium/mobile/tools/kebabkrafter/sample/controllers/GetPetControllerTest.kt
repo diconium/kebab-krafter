@@ -1,11 +1,11 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.controllers
 
 import com.diconium.mobile.tools.kebabkrafter.sample.FakeCallScope
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetController
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.PetsResponse
-import com.diconium.mobile.tools.kebabkrafter.sample.v1.controllers.GetPetController
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
 import java.io.IOException
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

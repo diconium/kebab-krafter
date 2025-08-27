@@ -123,14 +123,12 @@ private fun CodeBlock.Builder.controlFlow(controlFlow: String, vararg args: Any?
     endControlFlow()
 }
 
-private fun UrlType.toValue(input: String): String {
-    return when (format) {
-        UrlType.Format.String -> input
-        UrlType.Format.Int -> "$input?.toIntOrNull()"
-        UrlType.Format.Boolean -> "$input?.toBoolean()"
-        UrlType.Format.Float -> "$input?.toFloat()"
-        UrlType.Format.StringArray -> "$input?.split(\",\")"
-    }
+private fun UrlType.toValue(input: String): String = when (format) {
+    UrlType.Format.String -> input
+    UrlType.Format.Int -> "$input?.toIntOrNull()"
+    UrlType.Format.Boolean -> "$input?.toBoolean()"
+    UrlType.Format.Float -> "$input?.toFloat()"
+    UrlType.Format.StringArray -> "$input?.split(\",\")"
 }
 
 private fun CodeBlock.Builder.generateJsonResponse(response: KtorController.Response) {

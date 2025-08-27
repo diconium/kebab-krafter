@@ -21,7 +21,6 @@ dependencies {
     implementation(libs.bundles.ktor.server)
 
     implementation(libs.kotlin.poet)
-    implementation(libs.kotlin.dateTime)
     implementation(libs.data.json)
     implementation(libs.data.yaml)
     implementation(libs.swagger.parser)
@@ -50,7 +49,7 @@ kotlin {
 licensee {
     allow("Apache-2.0")
     allow("MIT")
-    allowUrl("https://opensource.org/licenses/MIT")
+    allowUrl("https://opensource.org/license/mit")
     allowUrl("http://www.eclipse.org/org/documents/edl-v10.php") { because("Eclipse Distribution License - v 1.0") }
     allowUrl("https://github.com/Him188/yamlkt/blob/master/LICENSE") { because("Apache License 2.0") }
     allowUrl("http://www.mozilla.org/MPL/2.0/index.txt") { because("Mozilla Public License") }
@@ -61,7 +60,6 @@ ktlint { android = false }
 
 gradlePlugin {
     plugins {
-        @Suppress("UnstableApiUsage")
         create("kebabkrafter") {
             id = "com.diconium.mobile.tools.kebab-krafter"
             displayName = "Kebab Krafter"

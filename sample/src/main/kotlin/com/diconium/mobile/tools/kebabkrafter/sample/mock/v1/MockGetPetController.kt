@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.sample.v1.mock
+package com.diconium.mobile.tools.kebabkrafter.sample.mock.v1
 
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.GetPet

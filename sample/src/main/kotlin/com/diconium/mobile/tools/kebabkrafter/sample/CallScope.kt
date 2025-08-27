@@ -21,12 +21,8 @@ private class CallScopeImpl(private val call: ApplicationCall) : CallScope {
 private fun String?.toLocale() = this?.let { header ->
     val parts = header.split("-")
     if (header.length == 5 && parts.size == 2) {
-        Locale(parts[0].lowercase(), parts[1].uppercase())
+        Locale.of(parts[0], parts[1])
     } else {
         Locale.UK
     }
 } ?: Locale.UK
-
-class FakeCallScope(
-    override val locale: Locale = Locale.UK,
-) : CallScope

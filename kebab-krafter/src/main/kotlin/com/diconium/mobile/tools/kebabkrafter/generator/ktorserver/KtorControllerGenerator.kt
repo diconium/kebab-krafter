@@ -125,12 +125,10 @@ class KtorControllerGenerator(private val basePackage: String, private val conte
     }
 }
 
-private fun UrlType.toTypeName(): TypeName {
-    return when (format) {
-        UrlType.Format.String -> String::class.asTypeName()
-        UrlType.Format.Int -> Int::class.asTypeName()
-        UrlType.Format.Boolean -> Boolean::class.asTypeName()
-        UrlType.Format.Float -> Float::class.asTypeName()
-        UrlType.Format.StringArray -> List::class.asTypeName().parameterizedBy(String::class.asTypeName())
-    }.copy(nullable = required.not())
-}
+private fun UrlType.toTypeName(): TypeName = when (format) {
+    UrlType.Format.String -> String::class.asTypeName()
+    UrlType.Format.Int -> Int::class.asTypeName()
+    UrlType.Format.Boolean -> Boolean::class.asTypeName()
+    UrlType.Format.Float -> Float::class.asTypeName()
+    UrlType.Format.StringArray -> List::class.asTypeName().parameterizedBy(String::class.asTypeName())
+}.copy(nullable = required.not())

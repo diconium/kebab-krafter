@@ -35,7 +35,7 @@ object GenerateKtorServer {
                 }
             }
 
-            target.task("generateKtorServer") {
+            target.tasks.register("generateKtorServer") {
                 it.group = "generator"
                 it.doLast {
                     if (ktorServerInput.log) {

@@ -52,8 +52,8 @@ class DataClassesGenerator(
 
     private var addJsonDiscriminator: String? = null
 
-    private fun generateTypeSpecBuilder(dataClass: SpecModel): TypeSpec.Builder {
-        return TypeSpec.classBuilder(dataClass.asClassName).apply {
+    private fun generateTypeSpecBuilder(dataClass: SpecModel): TypeSpec.Builder =
+        TypeSpec.classBuilder(dataClass.asClassName).apply {
             dataClass.description?.let(::addKdoc)
 
             // Modifiers
@@ -140,7 +140,6 @@ class DataClassesGenerator(
                 }
             }
         }
-    }
 
     private fun generateDataModel(dataClass: SpecModel): FileSpec {
         // Kotlin File

@@ -2,7 +2,7 @@ package com.diconium.mobile.tools.kebabkrafter.sample
 
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.GetPet
-import com.diconium.mobile.tools.kebabkrafter.sample.v1.mock.MockGetPetController
+import com.diconium.mobile.tools.kebabkrafter.sample.mock.v1.MockGetPetController
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.reflect.KClass
