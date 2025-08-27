@@ -4,8 +4,8 @@ import com.diconium.mobile.tools.kebabkrafter.sample.FakeCallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetController
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.PetsResponse
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
 import java.io.IOException
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

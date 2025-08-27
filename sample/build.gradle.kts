@@ -31,6 +31,12 @@ repositories {
     mavenCentral()
 }
 
+licensee {
+    allow("Apache-2.0")
+    allow("EPL-1.0")
+    allowUrl("https://opensource.org/license/mit")
+}
+
 dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.kotlinx.serialization)
@@ -40,10 +46,6 @@ dependencies {
 
     testImplementation(libs.ktor.server.tests)
     testImplementation(libs.kotlin.test)
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 kotlin {
