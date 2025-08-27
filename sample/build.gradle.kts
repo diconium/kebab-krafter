@@ -6,16 +6,15 @@ import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-private val ktorVersion: String = "2.3.12"
-private val kotlinVersion: String = "1.9.24"
-private val logbackVersion: String = "1.4.14"
-
 plugins {
-    kotlin("jvm") version "1.9.23"
-    kotlin("plugin.serialization") version "1.9.22"
-    id("io.ktor.plugin") version "2.3.10"
+
     id("com.diconium.mobile.tools.kebab-krafter") version "1.0-SNAPSHOT"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.licensee)
+    alias(libs.plugins.ktlint)
 }
 
 group = "com.diconium.mobile.tools.networkgenerator.sample"
@@ -33,18 +32,14 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-server-cio-jvm")
-    implementation("io.ktor:ktor-server-cors:$ktorVersion")
-    implementation("io.ktor:ktor-server-swagger:$ktorVersion")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
-    implementation("io.insert-koin:koin-core:3.5.6")
-    testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    implementation(libs.bundles.ktor)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.koin)
+    implementation(libs.logback)
+
+    testImplementation(libs.ktor.server.tests)
+    testImplementation(libs.kotlin.test)
 }
 
 tasks.test {
@@ -55,7 +50,6 @@ kotlin {
     jvmToolchain(21)
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_21)
-        optIn.add("com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi")
     }
 }
 
