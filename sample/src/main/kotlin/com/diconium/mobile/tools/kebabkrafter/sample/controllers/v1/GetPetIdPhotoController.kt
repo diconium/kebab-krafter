@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.sample.v1.controllers
+package com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1
 
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.PetStoreException
