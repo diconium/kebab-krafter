@@ -13,13 +13,10 @@ sealed class BaseSpecModel {
 
     fun getFullPackageName(basePackageName: String) = "$basePackageName.$relativePackageName"
 
-    fun getClassName(basePackageName: String): ClassName {
-        return ClassName.bestGuess(getClassNameFromRef("$basePackageName.$relativePackageName/$name"))
-    }
+    fun getClassName(basePackageName: String): ClassName =
+        ClassName.bestGuess(getClassNameFromRef("$basePackageName.$relativePackageName/$name"))
 
-    private fun getClassNameFromRef(ref: String): String {
-        return ref.replace("/", ".")
-    }
+    private fun getClassNameFromRef(ref: String): String = ref.replace("/", ".")
 }
 
 data class SealedSpecModel(
@@ -39,12 +36,7 @@ data class SpecModel(
     val parentId: String? = null,
 ) : BaseSpecModel()
 
-data class SpecField(
-    val name: String,
-    val type: Type,
-    val isRequired: Boolean,
-    val description: String?,
-) {
+data class SpecField(val name: String, val type: Type, val isRequired: Boolean, val description: String?) {
     sealed interface Type {
         data object String : Type
         data object Int : Type

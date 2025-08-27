@@ -27,10 +27,7 @@ data class Response(
     val headers: List<String>,
 )
 
-data class UrlType(
-    val required: Boolean,
-    val format: Format,
-) {
+data class UrlType(val required: Boolean, val format: Format) {
     enum class Format {
         String,
         Int,

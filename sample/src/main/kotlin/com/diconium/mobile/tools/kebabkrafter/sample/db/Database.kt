@@ -45,10 +45,8 @@ private val Pet.id: String
         }
     }
 
-private fun Pet.setId(id: String): Pet {
-    return when (this) {
-        is Pet.Cat -> this.copy(id = id)
-        is Pet.Dog -> this.copy(id = id)
-        is Pet.Parrot -> this.copy(id = id)
-    }
+private fun Pet.setId(id: String): Pet = when (this) {
+    is Pet.Cat -> this.copy(id = id)
+    is Pet.Dog -> this.copy(id = id)
+    is Pet.Parrot -> this.copy(id = id)
 }

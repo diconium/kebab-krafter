@@ -9,13 +9,9 @@ import io.ktor.http.*
 import io.ktor.util.encodeBase64
 import kotlin.random.Random
 
-class GetPetIdController(
-    private val findPetInDb: suspend (String) -> Pet?,
-) : GetPetId {
+class GetPetIdController(private val findPetInDb: suspend (String) -> Pet?) : GetPetId {
 
-    override suspend fun CallScope.execute(id: String): GetPetIdResponse {
-        return findPetInDb(id)?.let {
-            GetPetIdResponse(Random.nextBytes(36).encodeBase64(), it)
-        } ?: throw PetStoreException(HttpStatusCode.NotFound)
-    }
+    override suspend fun CallScope.execute(id: String): GetPetIdResponse = findPetInDb(id)?.let {
+        GetPetIdResponse(Random.nextBytes(36).encodeBase64(), it)
+    } ?: throw PetStoreException(HttpStatusCode.NotFound)
 }

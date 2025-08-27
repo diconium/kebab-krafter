@@ -5,10 +5,7 @@ import com.squareup.kotlinpoet.ClassName
 /**
  * Externalize simple class, package name concatenation and formation.
  */
-internal class PoetController(
-    private val basePackage: String,
-    controller: KtorController,
-) {
+internal class PoetController(private val basePackage: String, controller: KtorController) {
 
     val controllerClassName = ClassName("$basePackage.${controller.packageName}", controller.className)
     val requestClassName = controller.request.body?.let { requestBody ->
