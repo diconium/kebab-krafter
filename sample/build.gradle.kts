@@ -119,6 +119,7 @@ ktorServer {
     log = true
     packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
     specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
+    schemasFolder = File(rootDir, "src/main/resources/petstore/schemas")
 
     // use this for local testing your own APIs
     // specFile = File(rootDir, "test-data/api.yml")
