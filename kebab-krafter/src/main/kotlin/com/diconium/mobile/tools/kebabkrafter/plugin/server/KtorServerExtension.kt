@@ -1,21 +1,19 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
-import com.diconium.mobile.tools.kebabkrafter.generator.Transformers
+import com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi
 import org.gradle.api.Action
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Configuration for the 'generateKtorInterface' task.
@@ -39,42 +37,39 @@ import javax.inject.Inject
  *   of the `CallScope`
  * - The generated interfaces functions will be `suspend fun CallScope.execute(params)`
  */
-abstract class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
+interface KtorServerExtension {
 
     /**
      * True to enable logging; false otherwise
      */
     @get:Console
-    val log: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    val log: Property<Boolean>
 
+    //region input
     /**
      * Base package name for the generated files.
      */
     @get:Input
-    val packageName: Property<String> = objects.property(String::class.java)
+    val packageName: Property<String>
 
     /**
      * Swagger YAML spec file
      */
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
-    val specFile: Property<File> = objects.property(File::class.java)
-
-    @get:InputDirectory
-    abstract val schemasFolder: DirectoryProperty
+    val specFile: Property<File>
 
     /**
-     * Output folder for the generated files (defaults to 'build/generated/sources/ktorServer/').
-     * Note: only the default folder gets automatically added to the target sourceSet.
+     * Base folder where all the schemas are located (used for Gradle caching)
      */
-    @get:OutputDirectory
-    abstract val outputFolder: DirectoryProperty
+    @get:InputDirectory
+    val schemasFolder: DirectoryProperty
 
     /**
      * Specification for the custom context where and API call is executed
      */
     @get:Nested
-    internal val contextSpec: ContextSpecExtension = objects.newInstance(ContextSpecExtension::class.java)
+    val contextSpec: ContextSpecExtension
 
     /**
      * Specification for the custom context where and API call is executed
@@ -82,15 +77,30 @@ abstract class KtorServerExtension @Inject constructor(objects: ObjectFactory) {
     fun contextSpec(action: Action<ContextSpecExtension>) {
         action.execute(contextSpec)
     }
+    //endregion
 
-    // TODO: this should "somehow" also be an input
-    @get:Internal
-    internal val transformers = Transformers()
+    //region output
+    /**
+     * Output folder for the generated files (defaults to 'build/generated/sources/ktorServer/')
+     */
+    @get:OutputDirectory
+    val outputFolder: DirectoryProperty
+    //endregion
+
+    //region transformers
+    @get:Nested
+    @get:Optional
+    @KebabKrafterUnstableApi
+    val transformerSpec: TransformerSpec
 
     /**
      * Specification for the custom transformations for the API
      */
-    fun transformers(action: Action<Transformers>) {
-        action.execute(transformers)
+    @KebabKrafterUnstableApi
+    fun transformers(action: Action<TransformerSpec>) {
+        action.execute(transformerSpec)
     }
+//endregion
 }
+
+

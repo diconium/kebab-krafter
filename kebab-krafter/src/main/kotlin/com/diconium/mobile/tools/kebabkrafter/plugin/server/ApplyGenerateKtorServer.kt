@@ -1,5 +1,10 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
+import com.diconium.mobile.tools.kebabkrafter.generator.DefaultKtorControllerMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.EndpointTransformer
+import com.diconium.mobile.tools.kebabkrafter.generator.KtorController
+import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
@@ -14,16 +19,16 @@ fun applyGenerateKtorServer(target: Project) {
     val defaultOutput = target.layout.buildDirectory.dir("generated/sources/ktorServer/")
     ktorServerInput.outputFolder.convention(defaultOutput)
 
+    ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
+    ktorServerInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)
+    ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
+
     val task = target.tasks.register("generateKtorServer", GenerateKtorServerTask::class.java) {
         it.group = "generator"
         it.ktorServerInput.set(ktorServerInput)
     }
 
     target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-        target.tasks.named("compileKotlin").configure {
-            it.dependsOn(task)
-        }
-
         target.sourceSets { container ->
             container.main.configure { sourceSet ->
                 sourceSet.java.srcDirs(task)
@@ -46,3 +51,10 @@ private val SourceSet.kotlin: SourceDirectorySet
         as SourceDirectorySet
 
 
+private class DefaultEndpointTransformer : EndpointTransformer {
+    override fun transform(endpoint: Endpoint) = endpoint
+}
+
+private class DefaultKtorTransformer : KtorTransformer {
+    override fun transform(endpoint: Endpoint, controller: KtorController) = controller
+}

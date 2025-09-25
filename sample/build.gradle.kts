@@ -90,7 +90,7 @@ private val ktorTransformer = KtorTransformer { endpoint, ctrl ->
 
 // here are examples of crazy manipulations possible with the KtorMapper
 // but those are not being applied to the sample app
-val ktorMapper = KtorMapper { shortestPath: Int, dataSpecs: Map<String, BaseSpecModel>, endpoint: Endpoint ->
+val customKtorMapper = KtorMapper { shortestPath: Int, dataSpecs: Map<String, BaseSpecModel>, endpoint: Endpoint ->
     val ctrl: KtorController = DefaultKtorControllerMapper.map(shortestPath, dataSpecs, endpoint)
 
     val version = endpoint.path
@@ -132,7 +132,7 @@ ktorServer {
 
     // The transformers allow to manipulate the parsed data before code generation
     // with great power comes great responsibility, use it with care
-    // 	transformers {
-    // 		ktorMapper(ktorMapper)
-    // 	}
+    // transformers {
+    //     ktorMapper(customKtorMapper)
+    // }
 }

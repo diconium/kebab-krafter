@@ -11,12 +11,12 @@ import java.io.File
 /**
  * Helper to generate server + data classes together
  */
-fun generateKtorServerFor(
+internal fun generateKtorServerFor(
     packageName: String,
     baseDir: File,
     specFile: File,
     contextSpec: ContextSpec,
-    transformers: Transformers = Transformers(),
+    transformers: Transformers,
     installFunction: String = "installGeneratedRoutes",
 ) {
     // clean the output folder
