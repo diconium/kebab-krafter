@@ -41,6 +41,7 @@ interface KtorServerExtension {
 
     /**
      * True to enable logging; false otherwise
+     * defaults to: false
      */
     @get:Console
     val log: Property<Boolean>
@@ -81,9 +82,11 @@ interface KtorServerExtension {
 
     //region output
     /**
-     * Output folder for the generated files (defaults to 'build/generated/sources/ktorServer/')
+     * Output folder for the generated files
+     * defaults to: build/generated/sources/ktorServer/
      */
     @get:OutputDirectory
+    @get:Optional
     val outputFolder: DirectoryProperty
     //endregion
 

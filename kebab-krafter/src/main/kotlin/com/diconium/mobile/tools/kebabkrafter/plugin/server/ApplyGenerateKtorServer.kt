@@ -8,26 +8,32 @@ import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 
 fun applyGenerateKtorServer(target: Project) {
+
+    // create extension
     val ktorServerInput = target.extensions.create("ktorServer", KtorServerExtension::class.java)
 
-    val defaultOutput = target.layout.buildDirectory.dir("generated/sources/ktorServer/")
-    ktorServerInput.outputFolder.convention(defaultOutput)
-
+    // apply defaults
+    ktorServerInput.log.convention(false)
+    ktorServerInput.outputFolder.convention(target.defaultOutput)
     ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
     ktorServerInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)
     ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
 
+    // register task
     val task = target.tasks.register("generateKtorServer", GenerateKtorServerTask::class.java) {
         it.group = "generator"
         it.ktorServerInput.set(ktorServerInput)
     }
 
+    // wire task output to the main source set
     target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
         target.sourceSets { container ->
             container.main.configure { sourceSet ->
@@ -58,3 +64,6 @@ private class DefaultEndpointTransformer : EndpointTransformer {
 private class DefaultKtorTransformer : KtorTransformer {
     override fun transform(endpoint: Endpoint, controller: KtorController) = controller
 }
+
+private val Project.defaultOutput: Provider<Directory>
+    get() = this.layout.buildDirectory.dir("generated/sources/ktorServer/")
