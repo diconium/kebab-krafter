@@ -1,5 +1,6 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
+import com.diconium.mobile.tools.kebabkrafter.Log
 import com.diconium.mobile.tools.kebabkrafter.generator.Transformers
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.ContextSpec
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.generateKtorServerFor
@@ -15,6 +16,15 @@ abstract class GenerateKtorServerTask : DefaultTask() {
 
     @TaskAction
     fun action() {
+        if (ktorServerInput.get().log.get()) Log.logger = logger
+        try {
+            generateKtorServerFor()
+        } finally {
+            Log.logger = null
+        }
+    }
+
+    private fun generateKtorServerFor() {
         with(ktorServerInput.get()) {
 
             generateKtorServerFor(
