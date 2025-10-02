@@ -30,6 +30,23 @@ abstract class GenerateKtorServerTask : DefaultTask() {
                 },
 
                 transformers = with(ktorServerInput.get().transformerSpec) {
+
+                    // implementation notes:
+                    //
+                    // That's a very cheeky piece of code that I'm still unsure if genius or stupid.
+                    // Gradle tasks uses input/outputs to define UP-TO-DATE information,
+                    // and those inputs/outputs must be some type serializable
+                    // but the transformers/mappers are lambas (`fun interface`) and that was my problem.
+                    // The workaround here is that we set those inputs to `Class<out TYPE>` that are serializable.
+                    // in the extension object we capture the anonymous inner class from the lambda
+                    // and here we build a new instance of that lambda.
+                    //
+                    // This seems to work fine for simple lambdas, but, I can imagine on more complex scenario,
+                    // (e.g. if a lambda access components from the encompassing `Project`)
+                    // that it might not work so good, or produce unknown side effects.
+                    //
+                    // I think it's good that the transformers API is wrapped in an OptIn(KebabKrafterUnstableApi)
+
                     val et = endpointTransformer.get().getDeclaredConstructor()
                     et.isAccessible = true
 

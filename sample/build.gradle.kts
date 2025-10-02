@@ -132,7 +132,9 @@ ktorServer {
 
     // The transformers allow to manipulate the parsed data before code generation
     // with great power comes great responsibility, use it with care
-    // transformers {
-    //     ktorMapper(customKtorMapper)
-    // }
+
+//    @OptIn(KebabKrafterUnstableApi::class)
+//    transformers {
+//        ktorMapper(customKtorMapper)
+//    }
 }
