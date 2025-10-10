@@ -1,6 +1,6 @@
 <p align="center">
   <a href="docs/kebab-krafter-v2.png" rel="noopener">
-    <img width=200px height=200px src="docs/kebab-krafter-v2.png" alt="Project logo"></a>
+    <img width=200px height=200px src="docs/kebab-krafter-v2.1.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Kebab Krafter</h3>
