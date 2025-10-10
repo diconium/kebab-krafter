@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="docs/kebab-krafter-v2.png" rel="noopener">
+  <a href="docs/kebab-krafter-v2.1.png" rel="noopener">
     <img width=200px height=200px src="docs/kebab-krafter-v2.1.png" alt="Project logo"></a>
 </p>
 
