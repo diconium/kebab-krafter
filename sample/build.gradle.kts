@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
 
-    id("com.diconium.mobile.tools.kebab-krafter") version "1.0-SNAPSHOT"
+    id("io.github.budius.kebab-krafter") version "1.0-SNAPSHOT"
 
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.jvm)

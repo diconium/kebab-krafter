@@ -8,8 +8,8 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-group = "com.diconium.mobile.tools"
-version = "1.0-SNAPSHOT"
+group = "io.github.budius"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -63,12 +63,12 @@ ktlint { android = false }
 gradlePlugin {
     plugins {
         create("kebabkrafter") {
-            id = "com.diconium.mobile.tools.kebab-krafter"
-            displayName = "Kebab Krafter"
+            id = "io.github.budius.kebab-krafter"
+            displayName = "Kebab Krafter (Fork)"
             implementationClass = "com.diconium.mobile.tools.kebabkrafter.plugin.KebabKrafter"
             description = "Generates all the boring network API code from a Swagger spec."
-            website = "https://github.com/diconium/kebab-krafter"
-            vcsUrl = "https://github.com/diconium/kebab-krafter.git"
+            website = "https://github.com/budius/kebab-krafter"
+            vcsUrl = "https://github.com/budius/kebab-krafter.git"
             tags = listOf("swagger", "codegen", "generator", "ktor", "http", "backend")
         }
     }
