@@ -1,9 +1,9 @@
-import com.diconium.mobile.tools.kebabkrafter.generator.DefaultKtorControllerMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorController
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
-import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
+import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -72,11 +72,7 @@ ktlint {
 private val ktorTransformer = KtorTransformer { endpoint, ctrl ->
     // this is not used in the sample app, but it's here mostly as an example
 
-    val version = endpoint.path
-        .firstOrNull()
-        .takeIf { it?.matches("v[0-9]+".toRegex()) == true }
-        ?.substring(1)
-        ?.toInt()
+    val version = endpoint.path.firstOrNull().takeIf { it?.matches("v[0-9]+".toRegex()) == true }?.substring(1)?.toInt()
 
     if (version != null) {
         println("transforming: ${ctrl.ktorFunction} ${ctrl.route}")
@@ -91,12 +87,10 @@ private val ktorTransformer = KtorTransformer { endpoint, ctrl ->
 
 // here are examples of crazy manipulations possible with the KtorMapper
 // but those are not being applied to the sample app
-val customKtorMapper = KtorMapper { shortestPath: Int, dataSpecs: Map<String, BaseSpecModel>, endpoint: Endpoint ->
-    val ctrl: KtorController = DefaultKtorControllerMapper.map(shortestPath, dataSpecs, endpoint)
+val customKtorMapper = KtorMapper { shortestPath: Int, endpoint: Endpoint, dataSpecs: Map<String, JsonSpecFile> ->
+    val ctrl: KtorController = DefaultKtorControllerMapper.map(shortestPath, endpoint, dataSpecs)
 
-    val version = endpoint.path
-        .first()
-        .takeIf { it.startsWith("v") && it.trimStart('v').toIntOrNull() != null }
+    val version = endpoint.path.first().takeIf { it.startsWith("v") && it.trimStart('v').toIntOrNull() != null }
 
     if (version != null) {
         ctrl.copy(
@@ -120,7 +114,7 @@ ktorServer {
     log = true
     packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
     specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
-    schemasFolder = File(rootDir, "src/main/resources/petstore/schemas")
+    schemasFolder = File(rootDir, "src/main/resources/petstore/models")
 
     // use this for local testing your own APIs
     // specFile = File(rootDir, "test-data/api.yml")

@@ -1,9 +1,9 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
 import com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi
-import com.diconium.mobile.tools.kebabkrafter.generator.EndpointTransformer
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.EndpointTransformer
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
@@ -28,7 +28,7 @@ interface TransformerSpec {
      * Controller contains code related data such as package/class/kdoc.
      *
      * The mapper is the most complex (and powerful) part of the transformer API, hence use is discouraged.
-     * There is a [com.diconium.mobile.tools.kebabkrafter.generator.DefaultKtorControllerMapper] available that is used internally, but accessible for other mappers.
+     * There is a [com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper] available that is used internally, but accessible for other mappers.
      */
     @get:Optional
     @get:Input
@@ -43,7 +43,7 @@ interface TransformerSpec {
     val ktorTransformer: Property<Class<out KtorTransformer>>
 
     /**
-     * Transforms individual [com.diconium.mobile.tools.kebabkrafter.generator.KtorController] after they have been mapped.
+     * Transforms individual [com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController] after they have been mapped.
      * This is the last step before the actual code generator.
      *
      * The [com.diconium.mobile.tools.kebabkrafter.models.Endpoint] provided here in this callback is for reference only.

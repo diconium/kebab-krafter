@@ -1,7 +1,7 @@
-package com.diconium.mobile.tools.kebabkrafter.generator
+package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
-import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
+import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile
 
 internal class Transformers(
     val endpointTransformer: EndpointTransformer,
@@ -14,7 +14,7 @@ fun interface EndpointTransformer {
 }
 
 fun interface KtorMapper {
-    fun map(shortestPath: Int, dataSpecs: Map<String, BaseSpecModel>, endpoint: Endpoint): KtorController
+    fun map(shortestPath: Int, endpoint: Endpoint, dataSpecs: Map<String, JsonSpecFile>): KtorController
 }
 
 fun interface KtorTransformer {

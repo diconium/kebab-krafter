@@ -1,41 +1,33 @@
 {
   "$schema": "http://json-schema.org/draft/2020-12/schema#",
-  "description": "A cat",
+  "description": "A parrot",
   "type": "object",
   "required": [
     "petType",
     "id",
     "name",
-    "color",
-    "weight"
+    "wordCount"
   ],
   "properties": {
     "petType": {
-      "const": "cat"
+      "const": "parrot"
     },
     "id": {
       "description": "UUID",
       "type": "string"
     },
     "name": {
-      "description": "Name of the cat",
+      "description": "Name of the parrot",
       "type": "string",
       "examples": [
-        "Fluffy",
-        "Mr. Collins",
-        "Baphomet"
+        "Tarzan",
+        "Ms. Lane",
+        "Loro"
       ]
     },
-    "color": {
-      "description": "The cat fur color(s)",
-      "type": "string",
-      "example": [
-        "brown"
-      ]
-    },
-    "weight": {
-      "description": "The cat weight in kilos",
-      "type": "number"
+    "wordCount": {
+      "description": "How many words the parrot is able to pronounce",
+      "type": "integer"
     },
     "dateOfBirth": {
       "description": "Date of birthday (ISO 8601), or null if unknown",
@@ -43,9 +35,9 @@
       "format": "date-time",
       "example": "2020-07-02T14:23:04.000Z"
     },
-    "location" : {
-      "description": "Where is the cat",
-      "$ref": "./Location.json"
+    "location": {
+      "description": "Where is the parrot",
+      "$ref": "common/Location.json"
     }
   }
 }

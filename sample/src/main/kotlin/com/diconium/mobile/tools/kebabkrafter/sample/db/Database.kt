@@ -2,6 +2,7 @@ package com.diconium.mobile.tools.kebabkrafter.sample.db
 
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.Pet
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.PetsResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.common.Color
 import kotlin.time.Instant
 
 // here's some fake database responses
@@ -11,8 +12,8 @@ object Database {
     private var ids = 1
 
     private val data = mutableListOf(
-        Pet.Cat("id.0", "Miau", "brown", 2.3f, Instant.fromEpochMilliseconds(1676036625000)),
-        Pet.Dog("id.1", "Toto", "white", 7.3f, 6, "bulldog", Instant.fromEpochMilliseconds(1531622625000)),
+        Pet.Cat("id.0", "Miau", Color.BROWN, 2.3f, Instant.fromEpochMilliseconds(1676036625000)),
+        Pet.Dog("id.1", "Toto", Color.WHITE, 7.3f, 6, true, "bulldog", Instant.fromEpochMilliseconds(1531622625000)),
     )
 
     val getAllPets: suspend () -> PetsResponse = {

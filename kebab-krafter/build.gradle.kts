@@ -25,7 +25,9 @@ dependencies {
     implementation(libs.data.yaml)
     implementation(libs.swagger.parser)
 
+    testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.junit5)
 }
 
 tasks.test {

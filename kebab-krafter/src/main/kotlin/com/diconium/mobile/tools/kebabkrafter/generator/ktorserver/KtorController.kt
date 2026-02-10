@@ -1,6 +1,6 @@
-package com.diconium.mobile.tools.kebabkrafter.generator
+package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
-import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
+import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
 import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
 import com.diconium.mobile.tools.kebabkrafter.models.UrlType
 import io.ktor.http.*
@@ -18,11 +18,11 @@ data class KtorController(
     data class Request(
         val pathParameters: List<Pair<String, UrlType>>,
         val queryParameters: List<Pair<String, UrlType>>,
-        val body: BaseSpecModel?,
+        val body: BaseJsonType?,
     )
 
     data class Response(
-        val body: BaseSpecModel?,
+        val body: BaseJsonType?,
         val status: HttpStatusCode,
         val type: ResponseType,
         val contentTypeHeader: String?,

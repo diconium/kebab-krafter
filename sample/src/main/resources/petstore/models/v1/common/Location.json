@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A place on earth",
+  "type": "object",
+  "required": [
+    "latitude",
+    "longitude"
+  ],
+  "properties": {
+    "latitude": {
+      "description": "geographic coordinate that specifies the north-south position of a point on the surface of the Earth",
+      "type": "number",
+      "format": "double"
+    },
+    "longitude": {
+      "description": "geographic coordinate that specifies the east-west position of a point on the surface of the Earth",
+      "type": "number",
+      "format": "double"
+    },
+    "city": {
+      "$ref": "#/$defs/city"
+    },
+    "city2": {
+      "description": "City but with different description",
+      "$ref": "#/$defs/city"
+    },
+    "country": {
+      "description": "City and Country doesn't make much sense, but it is here to test $def and $ref parsing",
+      "$ref": "#/$defs/country"
+    }
+  },
+  "$defs": {
+    "city": {
+      "type": "string",
+      "description": "City from this location"
+    },
+    "country": {
+      "type": "object",
+      "description": "Country from this location",
+      "required": [
+        "isoCode"
+      ],
+      "properties": {
+        "isoCode": {
+          "type": "string"
+        },
+        "uuid": {
+          "$ref": "Uuid.json"
+        },
+        "uuid2": {
+          "description": "UUID but with different description",
+          "$ref": "Uuid.json"
+        },
+        "name": {
+          "description": "User facing country name",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

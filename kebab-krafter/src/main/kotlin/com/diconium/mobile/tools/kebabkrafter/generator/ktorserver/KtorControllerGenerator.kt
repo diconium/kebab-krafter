@@ -1,8 +1,7 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
-import com.diconium.mobile.tools.kebabkrafter.generator.*
 import com.diconium.mobile.tools.kebabkrafter.generator.AUTO_GENERATOR_WARNING
-import com.diconium.mobile.tools.kebabkrafter.generator.PoetController
+import com.diconium.mobile.tools.kebabkrafter.generator.indent
 import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
 import com.diconium.mobile.tools.kebabkrafter.models.UrlType
 import com.squareup.kotlinpoet.*

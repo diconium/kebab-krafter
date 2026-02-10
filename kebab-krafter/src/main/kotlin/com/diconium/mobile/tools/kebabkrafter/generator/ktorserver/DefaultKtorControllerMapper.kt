@@ -1,13 +1,14 @@
-package com.diconium.mobile.tools.kebabkrafter.generator
+package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
-import com.diconium.mobile.tools.kebabkrafter.models.BaseSpecModel
+import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
+import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
+import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile
 import io.ktor.http.*
-import java.util.*
 
 object DefaultKtorControllerMapper : KtorMapper {
 
-    override fun map(shortestPath: Int, dataSpecs: Map<String, BaseSpecModel>, endpoint: Endpoint): KtorController {
+    override fun map(shortestPath: Int, endpoint: Endpoint, dataSpecs: Map<String, JsonSpecFile>): KtorController {
         val method = endpoint.method.value.toPascalCase()
         val (packageName, className) = if (shortestPath > 2) {
             endpoint.path.splitPath(method, 2)
@@ -30,11 +31,11 @@ object DefaultKtorControllerMapper : KtorMapper {
         val request = KtorController.Request(
             pathParameters = endpoint.pathParameters.toList(),
             queryParameters = endpoint.queryParameters.toList(),
-            body = endpoint.bodyId?.let { dataSpecs[it] },
+            body = endpoint.bodyId?.let { dataSpecs[it]?.model as? BaseJsonType },
         )
 
         val response = KtorController.Response(
-            body = endpoint.response.id?.let { dataSpecs[it] },
+            body = endpoint.response.id?.let { dataSpecs[it]?.model as? BaseJsonType },
             status = endpoint.response.status,
             type = endpoint.response.type,
             contentTypeHeader = endpoint.response.contentTypeHeader,

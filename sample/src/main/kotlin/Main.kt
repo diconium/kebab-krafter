@@ -40,7 +40,7 @@ fun Application.module() {
                 allowHeader(HttpHeaders.ContentType)
             }
             swaggerUI(path = "", swaggerFile = "petstore/swagger.yml")
-            staticResources("/schemas", "petstore/schemas")
+            staticResources("/schemas", "petstore/models")
         }
     }
 }

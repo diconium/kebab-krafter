@@ -1,9 +1,9 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
-import com.diconium.mobile.tools.kebabkrafter.generator.DefaultKtorControllerMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.EndpointTransformer
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorController
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.EndpointTransformer
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider

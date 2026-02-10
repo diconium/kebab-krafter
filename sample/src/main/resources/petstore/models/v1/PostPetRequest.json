@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Request to add a pet to the store",
+  "type": "object",
+  "required": [
+    "name",
+    "petType"
+  ],
+  "properties": {
+    "name": {
+      "description": "Name of the pet",
+      "type": "string",
+      "examples": [
+        "Fluffy",
+        "Ms. Lane",
+        "Lulu"
+      ]
+    },
+    "petType": {
+      "description": "The type of pet",
+      "type": "string",
+      "enum": [
+        "DOG",
+        "CAT",
+        "PARROT"
+      ]
+    },
+    "dateOfBirth": {
+      "description": "Date of birthday (ISO 8601), or null if unknown",
+      "type": "string",
+      "format": "date-time",
+      "examples": [
+        "2020-07-02T14:23:04.000Z"
+      ]
+    },
+    "extra": {
+      "description": "Test generation of inlined objects",
+      "type": "object",
+      "properties": {
+        "foo": {
+          "type": "string"
+        },
+        "bar": {
+          "$ref": "#/$defs/defExtra"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "defExtra": {
+      "type": "object",
+      "description": "Test defExtra",
+      "properties": {
+        "recursive": {
+          "type": "object",
+          "description": "Test object in object in def",
+          "properties": {
+            "reRecursive": {
+              "type": "object",
+              "description": "Test object in object in object in def",
+              "properties": {
+                "value2": {
+                  "type": "string"
+                },
+                "variation": {
+                  "description": "Deep nested enum",
+                  "type": "string",
+                  "enum": [
+                    "Value1",
+                    "Value2",
+                    "Value3"
+                  ]
+                }
+              }
+            },
+            "value1": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

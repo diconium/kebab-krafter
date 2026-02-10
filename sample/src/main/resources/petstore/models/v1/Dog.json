@@ -30,10 +30,7 @@
     },
     "color": {
       "description": "The dog fur color(s)",
-      "type": "string",
-      "example": [
-        "brown"
-      ]
+      "$ref": "common/Color.json"
     },
     "weight": {
       "description": "The dog weight in kilos",
@@ -42,6 +39,10 @@
     "trainingLevel": {
       "description": "A 0~10 indicating the level of training of the dog",
       "type": "integer"
+    },
+    "is_good_boy": {
+      "description": "Silly field to validate proper snake to camel case transformation",
+      "type": "boolean"
     },
     "breed": {
       "description": "The dog type",
@@ -54,9 +55,9 @@
       "format": "date-time",
       "example": "2020-07-02T14:23:04.000Z"
     },
-    "location" : {
+    "location": {
       "description": "Where is the dog",
-      "$ref": "./Location.json"
+      "$ref": "common/Location.json"
     }
   }
 }

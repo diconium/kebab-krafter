@@ -2,7 +2,7 @@ package com.diconium.mobile.tools.kebabkrafter.parser
 
 import com.diconium.mobile.tools.kebabkrafter.Log
 import com.diconium.mobile.tools.kebabkrafter.models.*
-import com.diconium.mobile.tools.kebabkrafter.models.SpecField.Type.DataModel
+import com.diconium.mobile.tools.kebabkrafter.parser.json.JsonParser
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.fromValue
 import io.swagger.parser.OpenAPIParser
@@ -12,18 +12,7 @@ import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.core.models.SwaggerParseResult
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import java.io.File
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
-
-@OptIn(ExperimentalSerializationApi::class)
-private val json = Json {
-    ignoreUnknownKeys = true
-    explicitNulls = false
-}
 
 object SwaggerParser {
 
@@ -134,220 +123,46 @@ object SwaggerParser {
         }
     }
 
-    private fun parseSpecs(file: File, endpoints: List<Endpoint>): Map<String, BaseSpecModel> {
+    private fun parseSpecs(yamlFile: File, endpoints: List<Endpoint>): Map<String, JsonSpecFile> {
+        val rootPath = yamlFile.parent + File.separator
+        val jsonParser = JsonParser(File(rootPath))
+
+        fun String.normalize(): String {
+//            var path = Path(this).normalize().pathString
+//            val file = File(rootPath, path)
+//            require(file.isFile && file.exists()) { "Cannot locate referenced file ${file.absolutePath}" }
+//            if (path.startsWith("./").not()) {
+//                path = "./$path"
+//            }
+//            return path
+
+            return this
+        }
+
         val queue = mutableListOf<String>().apply {
-            addAll(endpoints.mapNotNull { it.response.id })
-            addAll(endpoints.mapNotNull { it.bodyId })
+            addAll(endpoints.mapNotNull { it.response.id?.normalize() })
+            addAll(endpoints.mapNotNull { it.bodyId?.normalize() })
         }
 
-        val sealedModels = mutableMapOf<String, String>()
-        val notAmodel = mutableMapOf<String, SpecField.Type>()
-        val wipSpecs = mutableMapOf<String, BaseSpecModel?>()
+        val processedFiles = mutableSetOf<String>()
 
-        while (queue.isNotEmpty()) {
-            wipSpecs.computeIfAbsent(queue.removeFirst()) { path ->
+        return buildMap {
+            while (queue.isNotEmpty()) {
+                val path = queue.removeFirst()
+                if (processedFiles.contains(path)) continue
+                processedFiles.add(path)
+                val result = jsonParser.parse(File(rootPath, path))
+                val newSchemas = result.imports
+                    .map { it.path.normalize() }
+                    .filterNot { processedFiles.contains(it) }
+                queue.addAll(newSchemas)
 
-                Log.d("Parsing specs $path")
-
-                val subPaths = path.split("#/\$defs/")
-                val specFile = File(file.parentFile, subPaths[0])
-
-                val schema = run {
-                    val schema = json.decodeFromString<JsonSchema>(specFile.readText())
-                    if (subPaths.size == 1) {
-                        schema
-                    } else {
-                        schema.defs[subPaths[1]]!!
-                    }
-                }
-
-                val className = if (subPaths.size == 1) {
-                    specFile.nameWithoutExtension
-                } else {
-                    subPaths[1].replaceFirstChar { it.uppercase() }
-                }
-
-                (schema.type to null).asType()?.let { type ->
-                    // sometimes a .json spec might be just to specify the description/pattern and not be a data model
-                    // here we have just want to remember them and return null
-                    // in the next step we'll replace them in the spec models back to their real type
-                    notAmodel[path] = type
-                    return@computeIfAbsent null
-                }
-
-                if (schema.oneOf.isNotEmpty()) {
-                    return@computeIfAbsent SealedSpecModel(
-                        id = path,
-                        description = schema.description,
-                        relativePackageName = specFile.relativePackageName(file),
-                        name = specFile.nameWithoutExtension,
-                        types = schema.oneOf.map { oneOf ->
-                            val childModel = File(specFile.parentFile, oneOf.ref)
-                            val childModelId = childModel.relativeTo(file).path.replace("../", "")
-                            sealedModels[childModelId] = path // mark this as a child of a sealed parent
-                            queue += childModelId // adds this child to the processing queue
-                            childModelId
-                        },
-                    )
-                }
-
-                if (schema.anyOf.isNotEmpty()) {
-                    return@computeIfAbsent SealedSpecModel(
-                        id = path,
-                        description = schema.description,
-                        relativePackageName = specFile.relativePackageName(file),
-                        name = specFile.nameWithoutExtension,
-                        types = schema.anyOf.map { oneOf ->
-                            val childModel = File(specFile.parentFile, oneOf.ref)
-                            val childModelId = childModel.relativeTo(file).path.replace("../", "")
-                            sealedModels[childModelId] = path // mark this as a child of a sealed parent
-                            queue += childModelId // adds this child to the processing queue
-                            childModelId
-                        },
-                    )
-                }
-
-                val fields = mutableListOf<SpecField>()
-                schema.properties.forEach { (name, value) ->
-
-                    // sealed class discriminator
-                    value.const?.let { const ->
-                        fields += SpecField(
-                            name = name,
-                            description = value.description,
-                            type = SpecField.Type.SealedSerializationDiscriminator(const),
-                            isRequired = schema.required.contains(name),
-                        )
-                    }
-
-                    // simple type
-                    value.asType()?.let { type ->
-                        fields += SpecField(
-                            name = name,
-                            description = value.description,
-                            type = type,
-                            isRequired = schema.required.contains(name),
-                        )
-                    }
-
-                    // object type defined on a separate file
-                    value.ref?.takeUnless { it.startsWith("#") }?.let { ref ->
-                        val refFile = File(specFile.parentFile, ref)
-                        val id = refFile.relativeTo(file).path.replace("../", "")
-                        queue += id
-                        fields += SpecField(
-                            name = name,
-                            description = value.description,
-                            type = SpecField.Type.DataModel(id),
-                            isRequired = schema.required.contains(name),
-                        )
-                    }
-
-                    // object type defined in the same file
-                    value.ref?.takeIf { it.startsWith("#") }?.let { ref ->
-
-                        val id = subPaths[0] + ref
-                        queue += id
-
-                        fields += SpecField(
-                            name = name,
-                            description = value.description,
-                            type = SpecField.Type.DataModel(id),
-                            isRequired = schema.required.contains(name),
-                        )
-                    }
-
-                    // array type
-                    value.items?.takeIf { value.type == "array" }?.let { array ->
-                        val arrayType = (array.type to array.format).asType()
-                        when {
-                            // array of -> simple type
-                            arrayType != null -> {
-                                fields += SpecField(
-                                    name = name,
-                                    description = value.description,
-                                    type = SpecField.Type.DataArray(arrayType),
-                                    isRequired = schema.required.contains(name),
-                                )
-                            }
-
-                            // array of -> object type defined on a separate file
-                            array.ref != null && array.ref.startsWith("#").not() -> {
-                                val refFile = File(specFile.parentFile, array.ref)
-                                val id = refFile.relativeTo(file).path.replace("../", "")
-                                queue += id
-                                fields += SpecField(
-                                    name = name,
-                                    description = value.description,
-                                    type = SpecField.Type.DataArray(SpecField.Type.DataModel(id)),
-                                    isRequired = schema.required.contains(name),
-                                )
-                            }
-
-                            // array of -> object type defined in the same file
-                            array.ref != null && array.ref.startsWith("#") -> {
-                                val id = subPaths[0] + array.ref
-                                queue += id
-
-                                fields += SpecField(
-                                    name = name,
-                                    description = value.description,
-                                    type = SpecField.Type.DataArray(SpecField.Type.DataModel(id)),
-                                    isRequired = schema.required.contains(name),
-                                )
-                            }
-                        }
-                    }
-                }
-
-                SpecModel(
-                    id = path,
-                    description = schema.description,
-                    relativePackageName = specFile.relativePackageName(file),
-                    name = className,
-                    fields = fields,
-                    parentId = sealedModels[path],
-                )
+                put(path, result)
             }
         }
-
-        val specs = buildMap {
-            wipSpecs.forEach { (path, model) ->
-
-                when (model) {
-                    is SealedSpecModel -> {
-                        put(path, model)
-                        Unit
-                    }
-
-                    is SpecModel -> {
-                        // to build the final output we'll add all the spec model that were not null
-                        // and map the fields that were mistakenly added as a data model back to their real types
-                        put(
-                            path,
-                            model.copy(
-                                fields = model.fields.map { specField ->
-                                    if (specField.type is DataModel) {
-                                        notAmodel[specField.type.id]?.let { correctType ->
-                                            specField.copy(type = correctType)
-                                        } ?: specField
-                                    } else {
-                                        specField
-                                    }
-                                },
-                            ),
-                        )
-                        Unit
-                    }
-
-                    null -> {}
-                }
-            }
-        }
-        return specs
     }
 
-    fun parse(baseUrl: String, file: File): SwaggerSpec {
+    fun parse(file: File): SwaggerSpec {
         // https://github.com/swagger-api/swagger-parser
 
         fun load(isResolve: Boolean): SwaggerParseResult {
@@ -356,43 +171,29 @@ object SwaggerParser {
         }
 
         val openApi: OpenAPI = load(false).openAPI
-        val endpoints = parseEndpoints(openApi, load(true).openAPI)
+        val endpoints: List<Endpoint> = parseEndpoints(openApi, load(true).openAPI)
+        Log.d("================================")
+        Log.d("Found ${endpoints.size} endpoints:")
+        endpoints.forEach { endpoint ->
+            Log.d(
+                " |- ${endpoint.path.joinToString("/")}: body(${endpoint.bodyId}) -> response(${endpoint.response.id})",
+            )
+        }
+
         val specs = parseSpecs(file, endpoints)
 
-        return SwaggerSpec(baseUrl, endpoints, specs)
+        Log.d("Total ${specs.size} JSON schema files")
+        specs.forEach { (path, spec) ->
+            Log.d("- $path -> ${spec.model.smartToString()}")
+            if (spec.model is SealedJsonType) {
+                spec.model.types.forEach { type ->
+                    Log.d("  |- ${type.smartToString()}")
+                }
+            }
+            spec.definitions.forEach { (name, def) ->
+                Log.d("  |- $name -> ${def.smartToString()}")
+            }
+        }
+        return SwaggerSpec(endpoints, specs)
     }
 }
-
-private fun JsonSchema.Item.asType(): SpecField.Type? = when (type) {
-    "string" -> when {
-        format == "date-time" -> SpecField.Type.Date
-        !enum.isNullOrEmpty() -> SpecField.Type.Enum(enum)
-        else -> SpecField.Type.String
-    }
-
-    "boolean" -> SpecField.Type.Boolean
-    "integer" -> SpecField.Type.Int
-    "number" -> when {
-        format == "double" -> SpecField.Type.Double
-        else -> SpecField.Type.Float
-    }
-
-    else -> null
-}
-
-private fun Pair<String?, String?>.asType(): SpecField.Type? = when (first) {
-    "string" -> when (second) {
-        "date-time" -> SpecField.Type.Date
-        else -> SpecField.Type.String
-    }
-
-    "boolean" -> SpecField.Type.Boolean
-    "integer" -> SpecField.Type.Int
-    "number" -> SpecField.Type.Float
-    else -> null
-}
-
-private fun File.relativePackageName(base: File): String = parentFile.relativeTo(base).path
-    .replace("../", "")
-    .replace("/", ".")
-    .replace("schemas", "models")

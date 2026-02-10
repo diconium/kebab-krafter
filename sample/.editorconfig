@@ -13,5 +13,5 @@ ktlint_standard_no-wildcard-imports = disabled
 ij_kotlin_allow_trailing_comma_on_call_site = true
 ij_kotlin_allow_trailing_comma = true
 
-[{*.yml,*.yaml}]
+[{*.yml,*.yaml,*.json}]
 indent_size = 2

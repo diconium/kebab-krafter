@@ -1,8 +1,6 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
 import com.diconium.mobile.tools.kebabkrafter.Log
-import com.diconium.mobile.tools.kebabkrafter.generator.KtorController
-import com.diconium.mobile.tools.kebabkrafter.generator.Transformers
 import com.diconium.mobile.tools.kebabkrafter.generator.dataclasses.DataClassesGenerator
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import com.diconium.mobile.tools.kebabkrafter.parser.SwaggerParser
@@ -27,7 +25,7 @@ internal fun generateKtorServerFor(
 
     // parse the specification
     Log.l("Parsing ${specFile.name}...")
-    var spec = SwaggerParser.parse("10.0.0.1", specFile)
+    var spec = SwaggerParser.parse(specFile)
     Log.l("Found ${spec.endpoints.size} endpoints with ${spec.dataSpecs.size} data models")
 
     //region map and transforms the input
@@ -48,7 +46,7 @@ internal fun generateKtorServerFor(
 
     Log.l("Mapping Endpoints to ktorControllers")
     val initialControllers = spec.endpoints.map { endpoint ->
-        endpoint to transformers.ktorMapper.map(shortestPath, spec.dataSpecs, endpoint)
+        endpoint to transformers.ktorMapper.map(shortestPath, endpoint, spec.dataSpecs)
             .also { Log.d("- ${endpoint.logName} -> ${it.logName}") }
     }
 
@@ -66,10 +64,10 @@ internal fun generateKtorServerFor(
     //region Generate Kotlin code
     Log.l("Generating data class models")
     DataClassesGenerator(
+        outputDirectory = baseDir,
         basePackageName = packageName,
         spec.dataSpecs,
-        outputDirectory = baseDir,
-    ).generateDataModelFiles()
+    ).generate()
 
     Log.l("Generating KtorControllers")
     val ctrlGenerator = KtorControllerGenerator(

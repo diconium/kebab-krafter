@@ -2,6 +2,7 @@ package com.diconium.mobile.tools.kebabkrafter.generator;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.diconium.mobile.tools.kebabkrafter.generator.PluginPersistentStateComponent.*;
 import static java.lang.Character.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -148,4 +149,62 @@ public class StringUtil {
         return c == '.' || c == '-' || c == '_';
     }
 
+
+    static String wordsAndHyphenAndCamelToConstantCase(String s) {
+        boolean containsLowerCase = containsLowerCase(s);
+
+        StringBuilder buf = new StringBuilder();
+        char previousChar = ' ';
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            boolean isUpperCaseAndPreviousIsUpperCase = isUpperCase(previousChar) && isUpperCase(c);
+            boolean isUpperCaseAndPreviousIsLowerCase = isLowerCase(previousChar) && isUpperCase(c);
+            // boolean isLowerCaseLetter = !isWhitespace(c) && '_' != c && !isUpperCase(c);
+            // boolean isLowerCaseAndPreviousIsWhitespace = isWhitespace(lastChar) && isLowerCaseLetter;
+//			boolean previousIsWhitespace = isWhitespace(previousChar);
+//			boolean lastOneIsNotUnderscore = buf.length() > 0 && buf.charAt(buf.length() - 1) != '_';
+//			boolean isNotUnderscore = c != '_';
+            //  ORIGINAL      if (lastOneIsNotUnderscore && (isUpperCase(c) || isLowerCaseAndPreviousIsWhitespace)) {
+
+            //camelCase handling - add extra _
+            if (isLetter(c) && isLetter(previousChar) &&
+                (
+                    isUpperCaseAndPreviousIsLowerCase
+                        || (containsLowerCase && putSeparatorBetweenUppercases() && isUpperCaseAndPreviousIsUpperCase)
+                )
+            ) {
+                buf.append("_");
+                // extra _ after number
+            } else if ((isSeparatorAfterDigit() && isDigit(previousChar) && isLetter(c))
+                || (isSeparatorBeforeDigit() && isDigit(c) && isLetter(previousChar))) {
+                buf.append('_');
+            }
+
+
+            //replace separators by _
+            if ((isSeparator(c) || isWhitespace(c)) && isLetterOrDigit(previousChar) && nextIsLetterOrDigit(s, i)) {
+                buf.append('_');
+            } else {
+                buf.append(Character.toUpperCase(c));
+            }
+
+            previousChar = c;
+        }
+//		if (isWhitespace(previousChar)) {
+//			buf.append("_");
+//		}
+
+
+        return buf.toString();
+    }
+
+    static boolean containsLowerCase(String s) {
+        for (char c : s.toCharArray()) {
+            if (isLowerCase(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

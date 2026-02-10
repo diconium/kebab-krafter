@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "The base color of the pet.\nValues like orangeBrown and grey40 are there to validate the proper SCREAMING_SNAKE_CASE transformation",
+  "type": "string",
+  "enum": [
+    "black",
+    "white",
+    "brown",
+    "orangeBrown",
+    "grey00",
+    "grey40",
+    "grey5F",
+    "greyEe",
+    "mixed"
+  ]
+}

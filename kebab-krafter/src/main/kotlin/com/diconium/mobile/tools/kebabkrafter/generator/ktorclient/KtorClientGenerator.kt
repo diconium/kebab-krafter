@@ -1,15 +1,11 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.ktorclient
 
-import com.diconium.mobile.tools.kebabkrafter.models.*
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import java.io.File
 
 class KtorClientGenerator(
     private val basePackageName: String,
     private val name: String,
-    private val swaggerSpec: SwaggerSpec,
+    // private val swaggerSpec: SwaggerSpec,
     private val outputDirectory: File,
 )
 
