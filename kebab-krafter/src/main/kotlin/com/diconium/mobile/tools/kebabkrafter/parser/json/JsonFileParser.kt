@@ -131,7 +131,15 @@ class JsonFileParser(private val handler: FileHandler) {
                 val key = schema.ref.replace("#/${JsonSchema.DEFS}/", "")
                 val defType: JsonSchema? = rootSchema.defs[key]
                 requireNotNull(defType) { "Referenced schema '${schema.ref}' not found" }
-                val computed = definitions.computeIfAbsent(key) { parse(defType, key) }
+
+                // https://github.com/budius/kebab-krafter/issues/3
+                // before was `definitions.computeIfAbsent(key) { parse(defType, key) }`
+                // but that caused ConcurrentModificationException when
+                // an element in $defs pointed to another element in $defs.
+                val computed = definitions[key] ?: run {
+                    parse(defType, key).also { definitions[key] = it }
+                }
+
                 if (computed is PrimitiveJsonSpec) {
                     // replace primitives directly
                     definitions.remove(key)

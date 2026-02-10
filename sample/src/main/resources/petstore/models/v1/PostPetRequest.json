@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft/2020-12/schema#",
-  "description": "Request to add a pet to the store",
+  "description": "Request to add a pet to the store.\n\nThis JSON schema contains a lot of crazy recursive and references\nthat don't make much sense in the `pet store` sample idea,\nbut those are added to test/validate the generation of complex data types\nand the recursiveness of the parser\n\n",
   "type": "object",
   "required": [
     "name",
@@ -77,6 +77,24 @@
               "type": "string"
             }
           }
+        },
+        "defArrayInDef": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/defInDef"
+          }
+        },
+        "defInDef": {
+          "$ref": "#/$defs/defInDef"
+        }
+      }
+    },
+    "defInDef": {
+      "type": "object",
+      "description": "Def linked from another def",
+      "properties": {
+        "value3": {
+          "type": "string"
         }
       }
     }
