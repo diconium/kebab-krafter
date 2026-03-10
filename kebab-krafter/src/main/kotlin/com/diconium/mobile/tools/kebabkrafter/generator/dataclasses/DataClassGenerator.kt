@@ -207,6 +207,9 @@ class DataClassGenerator(
             is Primitive.IntSpec -> Int::class.asTypeName()
             is Primitive.StringSpec -> String::class.asTypeName()
             is Primitive.LongSpec -> Long::class.asTypeName()
+            is Primitive.MapSpec -> Map::class.asTypeName()
+                .parameterizedBy(String::class.asTypeName())
+                .plusParameter(this.primitive.type.asPoetType(parents))
         }
 
         is RefJsonSpec -> classNameOfFile(path)

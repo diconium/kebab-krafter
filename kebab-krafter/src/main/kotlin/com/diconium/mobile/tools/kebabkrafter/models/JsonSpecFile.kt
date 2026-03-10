@@ -82,6 +82,7 @@ data class PrimitiveJsonSpec(val primitive: Primitive, override val description:
         data object DoubleSpec : Primitive
         data object DateSpec : Primitive
         data class ArraySpec(val type: BaseJsonSpec) : Primitive
+        data class MapSpec(val type: BaseJsonSpec) : Primitive
     }
 }
 
@@ -103,7 +104,7 @@ fun BaseJsonSpec.smartToString(): String = when (this) {
     is SealedJsonType -> "Sealed class(${relativePackageName}$name)"
     is ConcreteJsonType -> "Concrete class(${relativePackageName}$name)"
     is RefJsonSpec -> "External ($path)"
-    is DefJsonSpec -> "Extra ($def)"
+    is DefJsonSpec -> "Definition ($def)"
     is PrimitiveJsonSpec -> "Primitives ($primitive)"
     is EnumJsonType -> "Enum ($values)"
     is SealedJsonType.JsonDiscriminator -> "Const($key/$value)"

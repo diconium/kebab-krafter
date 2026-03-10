@@ -27,6 +27,23 @@
     "country": {
       "description": "City and Country doesn't make much sense, but it is here to test $def and $ref parsing",
       "$ref": "#/$defs/country"
+    },
+    "mapOfStrings": {
+      "description": "A map of strings",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mapOfDef": {
+      "additionalProperties": {
+        "$ref": "#/$defs/typeOfMap"
+      }
+    },
+    "mapOfRef": {
+      "description": "A Map of Colors",
+      "additionalProperties": {
+        "$ref": "./Color.json"
+      }
     }
   },
   "$defs": {
@@ -54,6 +71,19 @@
         "name": {
           "description": "User facing country name",
           "type": "string"
+        }
+      }
+    },
+    "typeOfMap": {
+      "description": "A Type for the map of def",
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "number"
+        },
+        "second": {
+          "type": "number",
+          "format": "integer"
         }
       }
     }

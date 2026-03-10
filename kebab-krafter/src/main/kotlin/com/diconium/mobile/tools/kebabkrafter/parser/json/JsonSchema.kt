@@ -33,6 +33,9 @@ data class JsonSchema(
     val exclusiveMinimum: Long?,
     val maximum: Long?,
     val exclusiveMaximum: Long?,
+
+    /** additionalProperties is used to create maps */
+    val additionalProperties: JsonSchema? = null,
 ) {
 
     enum class Type {

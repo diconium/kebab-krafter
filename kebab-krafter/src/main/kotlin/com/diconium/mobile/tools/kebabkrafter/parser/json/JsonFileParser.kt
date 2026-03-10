@@ -50,6 +50,7 @@ class JsonFileParser(private val handler: FileHandler) {
             SealedJsonType.JsonDiscriminator(objectName, schema.const, schema.description)
         }
 
+        schema.additionalProperties != null -> parseMap(schema, objectName)
         schema.anyOf.isNotEmpty() -> parseSealed(schema, schema.anyOf, objectName)
         schema.oneOf.isNotEmpty() -> parseSealed(schema, schema.oneOf, objectName)
         schema.type != null -> when (schema.type) {
@@ -214,6 +215,15 @@ class JsonFileParser(private val handler: FileHandler) {
             )
         }
         return SealedJsonType(root.description, handler.relativePackageName, objectName, types)
+    }
+
+    private fun parseMap(schema: JsonSchema, objectName: String): BaseJsonSpec {
+        val properties = schema.additionalProperties!!
+        val type = parse(properties, objectName)
+        return PrimitiveJsonSpec(
+            primitive = Primitive.MapSpec(type),
+            description = schema.description ?: properties.description,
+        )
     }
 }
 
