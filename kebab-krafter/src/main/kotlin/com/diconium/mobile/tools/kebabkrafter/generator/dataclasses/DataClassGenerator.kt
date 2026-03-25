@@ -210,6 +210,12 @@ class DataClassGenerator(
             is Primitive.MapSpec -> Map::class.asTypeName()
                 .parameterizedBy(String::class.asTypeName())
                 .plusParameter(this.primitive.type.asPoetType(parents))
+
+            is Primitive.EnumMapSpec -> {
+                Map::class.asTypeName()
+                    .parameterizedBy(this.primitive.keyType.asPoetType(parents))
+                    .plusParameter(this.primitive.valueType.asPoetType(parents))
+            }
         }
 
         is RefJsonSpec -> classNameOfFile(path)

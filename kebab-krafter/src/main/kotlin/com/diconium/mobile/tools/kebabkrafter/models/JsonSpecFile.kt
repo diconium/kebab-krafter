@@ -83,6 +83,7 @@ data class PrimitiveJsonSpec(val primitive: Primitive, override val description:
         data object DateSpec : Primitive
         data class ArraySpec(val type: BaseJsonSpec) : Primitive
         data class MapSpec(val type: BaseJsonSpec) : Primitive
+        data class EnumMapSpec(val keyType: BaseJsonSpec, val valueType: BaseJsonSpec) : Primitive
     }
 }
 

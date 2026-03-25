@@ -45,12 +45,9 @@ class JsonFileParser(private val handler: FileHandler) {
     }
 
     private fun parse(schema: JsonSchema, objectName: String): BaseJsonSpec = when {
-        schema.ref != null -> parseRef(schema)
-        schema.const != null -> {
-            SealedJsonType.JsonDiscriminator(objectName, schema.const, schema.description)
-        }
-
         schema.additionalProperties != null -> parseMap(schema, objectName)
+        schema.ref != null -> parseRef(schema)
+        schema.const != null -> SealedJsonType.JsonDiscriminator(objectName, schema.const, schema.description)
         schema.anyOf.isNotEmpty() -> parseSealed(schema, schema.anyOf, objectName)
         schema.oneOf.isNotEmpty() -> parseSealed(schema, schema.oneOf, objectName)
         schema.type != null -> when (schema.type) {
@@ -218,10 +215,69 @@ class JsonFileParser(private val handler: FileHandler) {
     }
 
     private fun parseMap(schema: JsonSchema, objectName: String): BaseJsonSpec {
+
         val properties = schema.additionalProperties!!
-        val type = parse(properties, objectName)
+        val valueType = parse(properties, objectName)
+
+        // Parse and validate map keys
+        // The keys can only be string (default fallback) or an enum type
+        val keyType: BaseJsonSpec? = when {
+
+            schema.enum != null -> {
+                EnumJsonType(
+                    null,
+                    handler.relativePackageName,
+                    schema.const ?: objectName,
+                    schema.enum,
+                ).also { type ->
+                    definitions["enum/${type.name}"] = type
+                }
+            }
+
+            schema.type == JsonSchema.Type.String -> {
+                // string is default fallback
+                null
+            }
+
+            schema.ref != null -> {
+                when (val result = parseRef(schema)) {
+
+                    is DefJsonSpec -> {
+                        val defined = definitions[result.def]
+                        requireNotNull(defined) { "Cannot find sealed definition ${result.smartToString()}" }
+                        require(defined is EnumJsonType) {
+                            "Defined ${defined.smartToString()} as part of $objectName must be enum type"
+                        }
+                        result
+                    }
+
+                    is RefJsonSpec -> {
+                        val handler = handler.handlerFromRoot(result.path)
+                        val ref = JsonFileParser(handler).parse()
+                        require(ref.model is EnumJsonType) {
+                            throw IllegalArgumentException(
+                                "Defined ${ref.model.smartToString()} " +
+                                    "as part of $objectName must be enum type",
+                            )
+                        }
+                        result
+                    }
+
+                    else -> throw IllegalStateException("${result.smartToString()} must be a enum type ")
+                }
+            }
+
+            else -> null
+        }
+
+        val mapType = if (keyType != null) {
+            Primitive.EnumMapSpec(keyType, valueType)
+        } else {
+            Primitive.MapSpec(valueType)
+        }
+
         return PrimitiveJsonSpec(
-            primitive = Primitive.MapSpec(type),
+            primitive = mapType,
             description = schema.description ?: properties.description,
         )
     }

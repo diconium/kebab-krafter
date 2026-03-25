@@ -44,6 +44,25 @@
       "additionalProperties": {
         "$ref": "./Color.json"
       }
+    },
+    "mapWithEnumKeys": {
+      "description": "A Map with enum keys defined in place",
+      "const": "CountryType",
+      "enum": [
+        "TYPE_0",
+        "TYPE_1",
+        "TYPE_O_NEGATIVE"
+      ],
+      "additionalProperties": {
+        "$ref": "#/$defs/country"
+      }
+    },
+    "mapWithEnumKeysReferenced": {
+      "description": "A Map with enum keys defined in an external file",
+      "$ref": "./Color.json",
+      "additionalProperties": {
+        "$ref": "#/$defs/country"
+      }
     }
   },
   "$defs": {
