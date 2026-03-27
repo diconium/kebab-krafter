@@ -36,7 +36,7 @@ Just add the configuration to your gradle script
 
 ```kotlin
 
-ktorServer {
+ktorServer.default {
 
 	// Root package name for the generated code
 	packageName = "root.package.name.for.the.generated.code"
@@ -53,7 +53,7 @@ ktorServer {
 }
 ```
 
-and with that you can execute `./gradlew generateKtorServer` to auto-genearted a `Route.installGeneratedRoutes`, all the `data classes` using `kotlinx-serialization` and the interfaces for each endpoint in the following format:
+and with that you can execute `./gradlew generateKtorServer` to generated a `Route.installGeneratedRoutes`, all the `data classes` using `kotlinx-serialization` and the interfaces for each endpoint in the following format:
 
 ```Kotlin
 public interface GetPathName {
@@ -84,7 +84,7 @@ interface CallScope {
 Making this context an interface is advisable, so that it's trivial to unit test the controller by creating a `FakeContext()`
 
 ```Kotlin
-// implement the real object separetely, to make it trivial to implement unit tests.
+// implement the real object separately, to make it trivial to implement unit tests.
 private class CallScopeImpl(private val call: ApplicationCall) : CallScope {
     override val locale: Locale by lazy {
         call.request.acceptLanguage().toLocale()

@@ -112,24 +112,27 @@ val customKtorMapper = KtorMapper { shortestPath: Int, endpoint: Endpoint, dataS
 
 ktorServer {
     log = true
-    packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
-    specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
-    schemasFolder = File(rootDir, "src/main/resources/petstore/models")
 
-    // use this for local testing your own APIs
-    // specFile = File(rootDir, "test-data/api.yml")
+    default {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
+        specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
+        schemasFolder = File(rootDir, "src/main/resources/petstore/models")
 
-    contextSpec {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
-        className = "CallScope"
-        factoryName = "from"
+        // use this for local testing your own APIs
+        // specFile = File(rootDir, "test-data/api.yml")
+
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+
+        // The transformers allow to manipulate the parsed data before code generation
+        // with great power comes great responsibility, use it with care
+
+//        @OptIn(KebabKrafterUnstableApi::class)
+//        transformers {
+//            ktorMapper(customKtorMapper)
+//        }
     }
-
-    // The transformers allow to manipulate the parsed data before code generation
-    // with great power comes great responsibility, use it with care
-
-//    @OptIn(KebabKrafterUnstableApi::class)
-//    transformers {
-//        ktorMapper(customKtorMapper)
-//    }
 }

@@ -4,40 +4,59 @@ import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorCo
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.EndpointTransformer
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.generator.toCamelCase
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
-import org.gradle.api.file.Directory
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 
 fun applyGenerateKtorServer(target: Project) {
     // create extension
-    val ktorServerInput = target.extensions.create("ktorServer", KtorServerExtension::class.java)
+    val ktorServer = target.extensions.create("ktorServer", KtorServerExtension::class.java)
 
     // apply defaults
-    ktorServerInput.log.convention(false)
-    ktorServerInput.outputFolder.convention(target.defaultOutput)
-    ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
-    ktorServerInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)
-    ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
+    ktorServer.log.convention(false)
 
-    // register task
-    val task = target.tasks.register("generateKtorServer", GenerateKtorServerTask::class.java) {
-        it.group = "generator"
-        it.ktorServerInput.set(ktorServerInput)
-    }
+    ktorServer.services.whenObjectAdded { ktorServerInput ->
 
-    // wire task output to the main source set
-    target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-        target.sourceSets { container ->
-            container.main.configure { sourceSet ->
-                sourceSet.java.srcDirs(task)
-                sourceSet.kotlin.srcDirs(task)
+        require(ktorServerInput.name.isBlank().not()) {
+            "Service name cannot be empty, use `default{}` instead"
+        }
+        val inputName = ktorServerInput.name.toCamelCase()
+
+        val folderName = when (ktorServerInput.name) {
+            DEFAULT -> "default"
+            else -> inputName
+        }
+
+        val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/${folderName}/")
+        ktorServerInput.outputFolder.convention(output)
+        ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
+        ktorServerInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)
+        ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
+
+        // register task(s)
+        val taskName = when (ktorServerInput.name) {
+            DEFAULT -> "generateKtorServer"
+            else -> "generate${inputName}KtorServer"
+        }
+        val task = target.tasks.register(taskName, GenerateKtorServerTask::class.java) {
+            it.group = "generator"
+            it.ktorServerInput.set(ktorServerInput)
+            it.log.set(ktorServer.log)
+        }
+
+        // wire task output to the main source set
+        target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+            target.sourceSets { container ->
+                container.main.configure { sourceSet ->
+                    sourceSet.java.srcDirs(task)
+                    sourceSet.kotlin.srcDirs(task)
+                }
             }
         }
     }
@@ -63,5 +82,4 @@ private class DefaultKtorTransformer : KtorTransformer {
     override fun transform(endpoint: Endpoint, controller: KtorController) = controller
 }
 
-private val Project.defaultOutput: Provider<Directory>
-    get() = this.layout.buildDirectory.dir("generated/sources/ktorServer/")
+internal const val DEFAULT = "___KEBAB_DEFAULT_NAME___"

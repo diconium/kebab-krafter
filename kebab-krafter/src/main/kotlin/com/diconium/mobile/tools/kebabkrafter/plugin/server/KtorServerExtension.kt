@@ -1,26 +1,18 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
-import com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi
 import org.gradle.api.Action
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Nested
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
-import java.io.File
 
 /**
- * Configuration for the 'generateKtorInterface' task.
+ * Configuration for the 'generateKtorServer' task.
  *
  * Example configuration:
  * ```
- * ktorServer {
+ * ktorServer.default {
  * 	packageName = "a.b.c"
  * 	baseDir = File(projectDir, "src/main/kotlin/")
  * 	specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
@@ -31,11 +23,36 @@ import java.io.File
  * 	}
  * }
  * ```
+ *
  * In the example above:
  * - The code will be generated in 'src/main/kotlin/a/b/c/'
  * - The generated code will invoke the function `a.b.c.CallScope.from(ApplicationCall): CallScope` to get new instance
  *   of the `CallScope`
  * - The generated interfaces functions will be `suspend fun CallScope.execute(params)`
+ *
+ * Alternatively to generate more than one server interface, use `create` function:
+ * ```
+ * ktorServer {
+ *
+ *   log = true (defaults to false)
+ *
+ *   default {
+ *      // this creates the task `generateKtorServer`
+ *      ... configuration for the default server
+ *   }
+ *
+ *   create("main") {
+ *      // this creates the task `generateMainKtorServer`
+ *      ... configuration for the main server
+ *   }
+ *
+ *   create("health") {
+ *      // this creates the task `generateHealthKtorServer`
+ *      ... configuration for the health endpoints
+ *   }
+ * }
+ * ```
+ *
  */
 interface KtorServerExtension {
 
@@ -46,62 +63,21 @@ interface KtorServerExtension {
     @get:Console
     val log: Property<Boolean>
 
-    //region input
-    /**
-     * Base package name for the generated files.
-     */
+    @get:Nested
     @get:Input
-    val packageName: Property<String>
+    val services: NamedDomainObjectContainer<KtorServerServiceExtension>
 
     /**
-     * Swagger YAML spec file
+     * Invoke this function to create and configure a KtorService
      */
-    @get:InputFile
-    @get:PathSensitive(PathSensitivity.NONE)
-    val specFile: Property<File>
-
-    /**
-     * Base folder where all the schemas are located (used for Gradle caching)
-     */
-    @get:InputDirectory
-    val schemasFolder: DirectoryProperty
-
-    /**
-     * Specification for the custom context where and API call is executed
-     */
-    @get:Nested
-    val contextSpec: ContextSpecExtension
-
-    /**
-     * Specification for the custom context where and API call is executed
-     */
-    fun contextSpec(action: Action<ContextSpecExtension>) {
-        action.execute(contextSpec)
+    fun create(name: String, block: Action<KtorServerServiceExtension>) {
+        services.create(name, block)
     }
-    //endregion
-
-    //region output
-    /**
-     * Output folder for the generated files
-     * defaults to: build/generated/sources/ktorServer/
-     */
-    @get:OutputDirectory
-    @get:Optional
-    val outputFolder: DirectoryProperty
-    //endregion
-
-    //region transformers
-    @get:Nested
-    @get:Optional
-    @KebabKrafterUnstableApi
-    val transformerSpec: TransformerSpec
 
     /**
-     * Specification for the custom transformations for the API
+     * Invoke this function to create and configure the default KtorService
      */
-    @KebabKrafterUnstableApi
-    fun transformers(action: Action<TransformerSpec>) {
-        action.execute(transformerSpec)
+    fun default(block: Action<KtorServerServiceExtension>) {
+        services.create(DEFAULT, block)
     }
-//endregion
 }

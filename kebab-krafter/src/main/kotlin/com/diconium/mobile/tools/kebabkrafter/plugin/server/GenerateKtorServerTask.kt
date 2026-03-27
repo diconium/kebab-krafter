@@ -6,17 +6,21 @@ import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.Transformers
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.generateKtorServerFor
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 
 abstract class GenerateKtorServerTask : DefaultTask() {
 
+    @get:Console
+    abstract val log: Property<Boolean>
+
     @get:Nested
-    abstract val ktorServerInput: Property<KtorServerExtension>
+    abstract val ktorServerInput: Property<KtorServerServiceExtension>
 
     @TaskAction
     fun action() {
-        if (ktorServerInput.get().log.get()) Log.logger = logger
+        if (log.get()) Log.logger = logger
         try {
             generateKtorServerFor()
         } finally {
