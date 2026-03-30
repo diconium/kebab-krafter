@@ -215,14 +215,12 @@ class JsonFileParser(private val handler: FileHandler) {
     }
 
     private fun parseMap(schema: JsonSchema, objectName: String): BaseJsonSpec {
-
         val properties = schema.additionalProperties!!
         val valueType = parse(properties, objectName)
 
         // Parse and validate map keys
         // The keys can only be string (default fallback) or an enum type
         val keyType: BaseJsonSpec? = when {
-
             schema.enum != null -> {
                 EnumJsonType(
                     null,
@@ -241,7 +239,6 @@ class JsonFileParser(private val handler: FileHandler) {
 
             schema.ref != null -> {
                 when (val result = parseRef(schema)) {
-
                     is DefJsonSpec -> {
                         val defined = definitions[result.def]
                         requireNotNull(defined) { "Cannot find sealed definition ${result.smartToString()}" }

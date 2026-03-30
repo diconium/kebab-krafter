@@ -33,7 +33,7 @@ fun applyGenerateKtorServer(target: Project) {
             else -> inputName
         }
 
-        val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/${folderName}/")
+        val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/$folderName/")
         ktorServerInput.outputFolder.convention(output)
         ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
         ktorServerInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)

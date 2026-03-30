@@ -1,14 +1,10 @@
 package com.diconium.mobile.tools.kebabkrafter.sample
 
-import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.DeletePetIdController
-import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetController
-import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetIdController
-import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetIdPdfController
-import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetIdPhotoController
-import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.PostPetController
+import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.*
 import com.diconium.mobile.tools.kebabkrafter.sample.db.Database
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.*
+import io.ktor.server.routing.*
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.reflect.KClass
@@ -25,6 +21,5 @@ object RealServices : ServiceLocator {
     }
 
     private val koin = koinApplication { modules(controllers) }.koin
-
-    override fun <T : Any> getService(type: KClass<T>): T = koin.get(type)
+    override fun <T : Any> RoutingContext.getService(type: KClass<T>): T = koin.get(type)
 }

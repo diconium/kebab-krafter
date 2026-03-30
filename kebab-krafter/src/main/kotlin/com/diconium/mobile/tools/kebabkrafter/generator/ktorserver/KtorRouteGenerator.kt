@@ -29,7 +29,6 @@ class KtorRouteGenerator(
             .addImport("io.ktor.http", "HttpStatusCode", "ContentType")
             .addImport(context.packageName, context.className)
             .addFunction(installFunction(installFunction, controllers))
-            .addFunction(serviceLocatorGet(serviceLocatorClass))
             .addType(serviceLocatorInterface())
             .build()
             .writeTo(outputDirectory)
@@ -68,7 +67,7 @@ class KtorRouteGenerator(
     private fun CodeBlock.Builder.generateCall(controller: KtorController) {
         val poet = PoetController(basePackage, controller)
         addStatement("val context = ${context.className}.${context.factoryName}(call)")
-        addStatement("val controller = locator.get<%T>()", poet.controllerClassName)
+        addStatement("val controller = with(locator) { getService(%T::class) }", poet.controllerClassName)
 
         val inputs = mutableListOf<String>()
         controller.request.pathParameters.forEach { (name, type) ->
@@ -164,22 +163,12 @@ private fun CodeBlock.Builder.generateBinaryResponse(response: KtorController.Re
     }
 }
 
-private fun serviceLocatorGet(serviceLocatorClass: ClassName): FunSpec {
-    val t = TypeVariableName("T", Any::class).copy(reified = true)
-    return FunSpec.builder("get")
-        .receiver(serviceLocatorClass)
-        .addModifiers(KModifier.PRIVATE, KModifier.INLINE)
-        .addTypeVariable(t)
-        .addCode("return this.getService(T::class)")
-        .returns(t)
-        .build()
-}
-
 private fun serviceLocatorInterface(): TypeSpec {
     val t = TypeVariableName("T", Any::class)
     return TypeSpec.interfaceBuilder("ServiceLocator")
         .addFunction(
             FunSpec.builder("getService")
+                .receiver(RoutingContext::class)
                 .addModifiers(KModifier.ABSTRACT)
                 .addTypeVariable(t)
                 .addParameter("type", KClass::class.asClassName().parameterizedBy(t))
