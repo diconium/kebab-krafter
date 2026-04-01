@@ -5,6 +5,7 @@ import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.EndpointTrans
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
 import com.diconium.mobile.tools.kebabkrafter.generator.toCamelCase
+import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectProvider
@@ -26,13 +27,7 @@ fun applyGenerateKtorServer(target: Project) {
         require(ktorServerInput.name.isBlank().not()) {
             "Service name cannot be empty, use `default{}` instead"
         }
-        val inputName = ktorServerInput.name.toCamelCase()
-
-        val folderName = when (ktorServerInput.name) {
-            DEFAULT -> "default"
-            else -> inputName
-        }
-
+        val folderName = ktorServerInput.name.toCamelCase()
         val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/$folderName/")
         ktorServerInput.outputFolder.convention(output)
         ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
@@ -40,10 +35,7 @@ fun applyGenerateKtorServer(target: Project) {
         ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
 
         // register task(s)
-        val taskName = when (ktorServerInput.name) {
-            DEFAULT -> "generateKtorServer"
-            else -> "generate${inputName}KtorServer"
-        }
+        val taskName = "generate${ktorServerInput.name.toPascalCase()}KtorServer"
         val task = target.tasks.register(taskName, GenerateKtorServerTask::class.java) {
             it.group = "generator"
             it.ktorServerInput.set(ktorServerInput)
@@ -81,5 +73,3 @@ private class DefaultEndpointTransformer : EndpointTransformer {
 private class DefaultKtorTransformer : KtorTransformer {
     override fun transform(endpoint: Endpoint, controller: KtorController) = controller
 }
-
-internal const val DEFAULT = "___KEBAB_DEFAULT_NAME___"

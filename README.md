@@ -36,24 +36,26 @@ Just add the configuration to your gradle script
 
 ```kotlin
 
-ktorServer.default {
+ktorServer {
 
-	// Root package name for the generated code
-	packageName = "root.package.name.for.the.generated.code"
+	create("main") {
+		// Root package name for the generated code
+		packageName = "root.package.name.for.the.generated.code"
 
-	// file system location for the swagger spec
-	specFile = File(rootDir, "swagger/api.yml")
+		// file system location for the swagger spec
+		specFile = File(rootDir, "swagger/api.yml")
 
-	// definition for the receiver class for the API controllers
-	contextSpec {
-		packageName = "com.myserver.api"
-		className = "CallScope"
-		factoryName = "from"
+		// definition for the receiver class for the API controllers
+		contextSpec {
+			packageName = "com.myserver.api"
+			className = "CallScope"
+			factoryName = "from"
+		}
 	}
 }
 ```
 
-and with that you can execute `./gradlew generateKtorServer` to generated a `Route.installGeneratedRoutes`, all the `data classes` using `kotlinx-serialization` and the interfaces for each endpoint in the following format:
+and with that you can execute `./gradlew generateMainKtorServer` to generated a `Route.installGeneratedRoutes`, all the `data classes` using `kotlinx-serialization` and the interfaces for each endpoint in the following format:
 
 ```Kotlin
 public interface GetPathName {

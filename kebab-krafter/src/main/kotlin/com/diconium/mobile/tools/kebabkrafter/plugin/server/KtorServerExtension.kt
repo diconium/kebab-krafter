@@ -36,11 +36,6 @@ import org.gradle.api.tasks.Nested
  *
  *   log = true (defaults to false)
  *
- *   default {
- *      // this creates the task `generateKtorServer`
- *      ... configuration for the default server
- *   }
- *
  *   create("main") {
  *      // this creates the task `generateMainKtorServer`
  *      ... configuration for the main server
@@ -72,12 +67,5 @@ interface KtorServerExtension {
      */
     fun create(name: String, block: Action<KtorServerServiceExtension>) {
         services.create(name, block)
-    }
-
-    /**
-     * Invoke this function to create and configure the default KtorService
-     */
-    fun default(block: Action<KtorServerServiceExtension>) {
-        services.create(DEFAULT, block)
     }
 }

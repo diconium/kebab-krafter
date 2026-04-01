@@ -1,3 +1,4 @@
+
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorMapper
@@ -113,7 +114,7 @@ val customKtorMapper = KtorMapper { shortestPath: Int, endpoint: Endpoint, dataS
 ktorServer {
     log = true
 
-    default {
+    create("petStore") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
         specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
         schemasFolder = File(rootDir, "src/main/resources/petstore/models")

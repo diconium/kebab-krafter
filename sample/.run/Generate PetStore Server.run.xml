@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="generateKtorServer" />
+          <option value="generatePetStoreKtorServer" />
         </list>
       </option>
       <option name="vmOptions" />
