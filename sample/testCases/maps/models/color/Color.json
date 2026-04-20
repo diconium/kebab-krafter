@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Description",
+  "type": "object",
+  "properties": {
+    "value": {
+      "type": "integer",
+      "maximum": 4294967296
+    },
+    "name": {
+      "type": "string",
+      "enum": [
+        "grey00",
+        "grey40",
+        "grey5F",
+        "greyEe"
+      ]
+    }
+  }
+}

@@ -192,6 +192,15 @@ class JsonFileParser(private val handler: FileHandler) {
 
                 imports.remove(result)
                 imports.addAll(ref.imports)
+
+                if (ref.definitions.isNotEmpty()) {
+                    Log.d("PARSER: adding ${ref.definitions.size} from ${ref.name} / ${ref.model.smartToString()}")
+                    ref.definitions.forEach { (string, spec) ->
+                        Log.d("PARSER: $string / ${spec.smartToString()}")
+                    }
+                }
+                definitions.putAll(ref.definitions)
+
                 result = ref.model
             }
 

@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Description",
+  "type": "string",
+  "enum": [
+    "Dark",
+    "Medium",
+    "Bright",
+    "Translucent"
+  ]
+}

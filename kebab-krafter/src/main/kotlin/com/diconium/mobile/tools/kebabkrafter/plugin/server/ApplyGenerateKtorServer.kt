@@ -8,6 +8,7 @@ import com.diconium.mobile.tools.kebabkrafter.generator.toCamelCase
 import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import org.gradle.api.Action
+import org.gradle.api.DefaultTask
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
@@ -22,6 +23,10 @@ fun applyGenerateKtorServer(target: Project) {
     // apply defaults
     ktorServer.log.convention(false)
 
+    val baseTask = target.tasks.register("generateKtorServer", DefaultTask::class.java) {
+        it.group = "generator"
+    }
+
     ktorServer.services.whenObjectAdded { ktorServerInput ->
 
         require(ktorServerInput.name.isBlank().not()) {
@@ -33,14 +38,16 @@ fun applyGenerateKtorServer(target: Project) {
         ktorServerInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
         ktorServerInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)
         ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
+        ktorServerInput.installFunction.convention("install${ktorServerInput.name.toPascalCase()}GeneratedRoutes")
 
         // register task(s)
         val taskName = "generate${ktorServerInput.name.toPascalCase()}KtorServer"
         val task = target.tasks.register(taskName, GenerateKtorServerTask::class.java) {
-            it.group = "generator"
+            // it.group = "generator"
             it.ktorServerInput.set(ktorServerInput)
             it.log.set(ktorServer.log)
         }
+        baseTask.configure { it.dependsOn(task) }
 
         // wire task output to the main source set
         target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {

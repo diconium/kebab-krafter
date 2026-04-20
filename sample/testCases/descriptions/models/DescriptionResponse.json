@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Mostly test on how a description overloads from one object to another",
+  "type": "object",
+  "properties": {
+    "city": {
+      "$ref": "#/$defs/city"
+    },
+    "anotherCity": {
+      "description": "City but with different description",
+      "$ref": "#/$defs/city"
+    },
+    "country": {
+      "description": "Test $def and $ref parsing",
+      "$ref": "#/$defs/country"
+    }
+  },
+  "$defs": {
+    "city": {
+      "type": "string",
+      "description": "City from this response"
+    },
+    "country": {
+      "type": "object",
+      "description": "Country from this response",
+      "required": [
+        "isoCode"
+      ],
+      "properties": {
+        "isoCode": {
+          "type": "string"
+        },
+        "uuid": {
+          "$ref": "sub/Uuid.json"
+        },
+        "uuid2": {
+          "description": "UUID but with different description",
+          "$ref": "sub/Uuid.json"
+        },
+        "name": {
+          "description": "User facing country name",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

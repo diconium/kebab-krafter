@@ -1,0 +1,21 @@
+openapi: '3.0.3'
+
+info:
+  title: Parsing of names with acronyms
+  version: '1.0.0'
+
+paths:
+  /edge_case_inlined:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './models/InlinedResponse.json'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: './models/InlinedResponse.json'

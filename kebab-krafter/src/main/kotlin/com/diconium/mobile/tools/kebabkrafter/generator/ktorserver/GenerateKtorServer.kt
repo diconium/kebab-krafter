@@ -15,7 +15,7 @@ internal fun generateKtorServerFor(
     specFile: File,
     contextSpec: ContextSpec,
     transformers: Transformers,
-    installFunction: String = "installGeneratedRoutes",
+    installFunction: String,
 ) {
     // clean the output folder
     File(baseDir, packageName.replace(".", "/")).apply {

@@ -1,6 +1,10 @@
 import com.diconium.mobile.tools.kebabkrafter.sample.MockServices
 import com.diconium.mobile.tools.kebabkrafter.sample.RealServices
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.installGeneratedRoutes
+import com.diconium.mobile.tools.kebabkrafter.sample.cases.installGetEdgeCaseMaps
+import com.diconium.mobile.tools.kebabkrafter.sample.cases.installPostEdgeCaseAcronym
+import com.diconium.mobile.tools.kebabkrafter.sample.cases.installPostEdgeCaseDescription
+import com.diconium.mobile.tools.kebabkrafter.sample.cases.installPostEdgeCaseInlined
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.installPetStoreGeneratedRoutes
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -25,12 +29,19 @@ fun Application.module() {
     routing {
         // the real implementation of the sample backend
         route("/api") {
-            installGeneratedRoutes(RealServices)
+            installPetStoreGeneratedRoutes(RealServices)
         }
 
         // a mock implementation of the sample backend
         route("/mock") {
-            installGeneratedRoutes(MockServices)
+            installPetStoreGeneratedRoutes(MockServices)
+        }
+
+        route("/testCases") {
+            installGetEdgeCaseMaps()
+            installPostEdgeCaseAcronym()
+            installPostEdgeCaseInlined()
+            installPostEdgeCaseDescription()
         }
 
         // ktor can also be serving its own swagger API

@@ -1,4 +1,3 @@
-
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorMapper
@@ -114,6 +113,7 @@ val customKtorMapper = KtorMapper { shortestPath: Int, endpoint: Endpoint, dataS
 ktorServer {
     log = true
 
+    // The PetStore example
     create("petStore") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
         specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
@@ -136,4 +136,47 @@ ktorServer {
 //            ktorMapper(customKtorMapper)
 //        }
     }
+
+    //region development/testing of edge cases and complex data structures
+    create("caseMaps") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps"
+        specFile = File(rootDir, "testCases/maps/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/maps/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
+    create("caseAcronym") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.acronym"
+        specFile = File(rootDir, "testCases/acronym/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/acronym/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
+    create("caseInlined") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined"
+        specFile = File(rootDir, "testCases/inlined/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/inlined/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
+    create("caseDescriptions") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.descriptions"
+        specFile = File(rootDir, "testCases/descriptions/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/descriptions/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
+    //endregion
 }

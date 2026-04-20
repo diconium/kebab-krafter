@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A place on earth",
+  "type": "object",
+  "required": [
+    "y",
+    "m",
+    "c",
+    "a"
+  ],
+  "properties": {
+    "y": {
+      "type": "string"
+    },
+    "m": {
+      "type": "string"
+    },
+    "c": {
+      "type": "string"
+    },
+    "a": {
+      "type": "string"
+    }
+  }
+}

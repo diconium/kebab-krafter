@@ -36,6 +36,12 @@ abstract class KtorServerServiceExtension(@get:Input val name: String) {
     abstract val contextSpec: ContextSpecExtension
 
     /**
+     * Name of the route installation function
+     */
+    @get:Input
+    abstract val installFunction: Property<String>
+
+    /**
      * Specification for the custom context where and API call is executed
      */
     fun contextSpec(action: Action<ContextSpecExtension>) {

@@ -23,7 +23,7 @@ class DataClassGenerator(
 ) {
 
     fun generate() {
-        Log.d("packageName($packageName), className($fileClassName)")
+        Log.d("DataClassGenerator: packageName($packageName), className($fileClassName)")
         FileSpec
             .builder(packageName, fileClassName)
             .indent()
@@ -39,7 +39,8 @@ class DataClassGenerator(
             .writeTo(outputDirectory)
     }
 
-    private fun Map<String, BaseJsonSpec>.models() = this.map { (_, spec) ->
+    private fun Map<String, BaseJsonSpec>.models() = this.map { (s, spec) ->
+        Log.d("DataClassGenerator.models() $s / ${spec.smartToString()}")
         model(spec as RootJsonType).build()
     }
 

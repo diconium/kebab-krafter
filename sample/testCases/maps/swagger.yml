@@ -1,0 +1,17 @@
+openapi: '3.0.3'
+
+info:
+  title: Parsing of data structures with maps
+  version: '1.0.0'
+
+paths:
+  /edge_case_maps:
+    get:
+      tags: [ general ]
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: './models/MapResponse.json'

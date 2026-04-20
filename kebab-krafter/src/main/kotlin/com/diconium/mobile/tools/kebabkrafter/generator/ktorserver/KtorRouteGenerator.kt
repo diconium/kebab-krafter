@@ -2,6 +2,7 @@ package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
 import com.diconium.mobile.tools.kebabkrafter.generator.AUTO_GENERATOR_WARNING
 import com.diconium.mobile.tools.kebabkrafter.generator.indent
+import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
 import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
 import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
 import com.diconium.mobile.tools.kebabkrafter.models.UrlType
@@ -89,7 +90,7 @@ class KtorRouteGenerator(
             inputs.add(name)
         }
         controller.request.body?.let { body: BaseJsonType ->
-            val type = ClassName("$basePackage.${body.relativePackageName}", body.name)
+            val type = ClassName("$basePackage.${body.relativePackageName}", body.name.toPascalCase())
             addStatement("val body = call.receive<%T>()", type)
             inputs.add("body")
         }

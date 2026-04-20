@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A place on earth",
+  "type": "object",
+  "required": [
+    "mapOfStrings",
+    "mapOfDef",
+    "mapOfRef",
+    "mapWithEnumKeys",
+    "mapWithEnumKeysReferenced"
+  ],
+  "properties": {
+    "mapOfStrings": {
+      "description": "A map of strings",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mapOfDef": {
+      "additionalProperties": {
+        "$ref": "#/$defs/typeOfMap"
+      }
+    },
+    "mapOfRef": {
+      "description": "A Map of Colors",
+      "additionalProperties": {
+        "$ref": "./color/Color.json"
+      }
+    },
+    "mapWithEnumKeys": {
+      "description": "A Map with enum keys defined in place",
+      "const": "CountryType",
+      "enum": [
+        "TYPE_0",
+        "TYPE_1",
+        "TYPE_O_NEGATIVE"
+      ],
+      "additionalProperties": {
+        "$ref": "#/$defs/tree"
+      }
+    },
+    "mapWithEnumKeysReferenced": {
+      "description": "A Map with enum keys defined in an external file",
+      "$ref": "./color/ColorType.json",
+      "additionalProperties": {
+        "$ref": "#/$defs/tree"
+      }
+    }
+  },
+  "$defs": {
+    "typeOfMap": {
+      "description": "A Type for the map of def",
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "number"
+        },
+        "second": {
+          "type": "number",
+          "format": "integer"
+        }
+      }
+    },
+    "tree": {
+      "description": "Description",
+      "type": "object",
+      "properties": {
+        "species": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

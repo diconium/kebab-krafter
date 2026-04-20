@@ -34,6 +34,7 @@ abstract class GenerateKtorServerTask : DefaultTask() {
                 packageName = packageName.get(),
                 baseDir = outputFolder.get().asFile,
                 specFile = specFile.get(),
+                installFunction = installFunction.get(),
                 contextSpec = with(contextSpec) {
                     ContextSpec(
                         packageName = packageName.get(),
