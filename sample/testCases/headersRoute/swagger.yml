@@ -1,0 +1,21 @@
+openapi: '3.0.3'
+
+info:
+  title: Headers routing
+  version: '1.0.0'
+
+paths:
+  /v1/some/path:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './models/NotImportant.json'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: './models/NotImportant.json'

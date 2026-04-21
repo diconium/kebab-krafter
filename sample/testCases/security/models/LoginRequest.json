@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Username and Password",
+  "type": "object",
+  "required": [
+    "u",
+    "p"
+  ],
+  "properties": {
+    "u": {
+      "type": "string"
+    },
+    "p": {
+      "type": "string"
+    }
+  }
+}

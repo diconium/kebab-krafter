@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "type": "object",
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "string"
+    }
+  }
+}

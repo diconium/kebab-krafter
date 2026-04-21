@@ -9,6 +9,7 @@ data class KtorController(
     val ktorFunction: String,
     val route: String,
     val routeHeaders: List<Pair<String, String>>,
+    val authentication: List<String>,
     val packageName: String,
     val className: String,
     val kdoc: String?,

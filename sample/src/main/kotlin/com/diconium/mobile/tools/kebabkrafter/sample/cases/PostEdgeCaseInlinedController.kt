@@ -9,18 +9,13 @@ import io.ktor.server.routing.*
 import kotlin.reflect.KClass
 
 class PostEdgeCaseInlinedController : PostEdgeCaseInlined {
-    override suspend fun CallScope.execute(body: InlinedResponse): InlinedResponse {
-        return body
-    }
+    override suspend fun CallScope.execute(body: InlinedResponse): InlinedResponse = body
 }
 
 fun Route.installPostEdgeCaseInlined() {
     installCaseInlinedGeneratedRoutes(
         object : ServiceLocator {
-            override fun <T : Any> RoutingContext.getService(type: KClass<T>): T {
-                return PostEdgeCaseInlinedController() as T
-            }
+            override fun <T : Any> RoutingContext.getService(type: KClass<T>): T = PostEdgeCaseInlinedController() as T
         },
     )
 }
-

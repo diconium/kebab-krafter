@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.parameters.Parameter
+import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.core.models.SwaggerParseResult
 import java.io.File
@@ -43,6 +44,11 @@ internal class SwaggerParser(private val log: KebabLogger) {
             pathParameters?.let(::addAll)
         }
 
+        val authentication = operation.security
+            ?.flatMap { req: SecurityRequirement? -> req?.keys ?: emptyList() }
+            ?.filterNotNull()
+            ?: emptyList()
+
         return Endpoint(
             path = key.split("/").filter { it.isNotBlank() },
             method = method,
@@ -54,26 +60,25 @@ internal class SwaggerParser(private val log: KebabLogger) {
             bodyId = operation.requestBody?.content?.get("application/json")?.schema?.`$ref`
                 ?.takeIf { it.endsWith(".json") },
             errorResponseIds = parseFailureResponses(operation),
+            authentication = authentication,
         )
     }
 
-    private fun parseFailureResponses(operation: Operation): Map<HttpStatusCode, String> {
-        return operation
-            .responses
-            .entries
-            .mapNotNull { (key, value) ->
-                val httpStatus = fromValue(key.toInt())
-                val isFailure = httpStatus.value in (400 until 600)
-                val responseId = value.content?.get("application/json")?.schema?.`$ref`?.takeIf { it.endsWith(".json") }
-                if (responseId != null && isFailure) {
-                    httpStatus to responseId
-                } else {
-                    null
-                }
+    private fun parseFailureResponses(operation: Operation): Map<HttpStatusCode, String> = operation
+        .responses
+        .entries
+        .mapNotNull { (key, value) ->
+            val httpStatus = fromValue(key.toInt())
+            val isFailure = httpStatus.value in (400 until 600)
+            val responseId = value.content?.get("application/json")?.schema?.`$ref`?.takeIf { it.endsWith(".json") }
+            if (responseId != null && isFailure) {
+                httpStatus to responseId
+            } else {
+                null
             }
-            // associate
-            .associate { it }
-    }
+        }
+        // associate
+        .associate { it }
 
     private fun parseSuccessResponse(operation: Operation): Response {
         val successCount = operation.responses.entries.count { fromValue(it.key.toInt()).isSuccess() }

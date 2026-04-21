@@ -10,19 +10,14 @@ import io.ktor.server.routing.*
 import kotlin.reflect.KClass
 
 class PostEdgeCaseAcronymController : PostEdgeCaseAcronym {
-    override suspend fun CallScope.execute(body: EcAcronymResponse): EcAcronymResponse {
-        return EcAcronymResponse(YmcaDetail("a", "c", "m", "y"))
-    }
+    override suspend fun CallScope.execute(body: EcAcronymResponse): EcAcronymResponse =
+        EcAcronymResponse(YmcaDetail("a", "c", "m", "y"))
 }
-
 
 fun Route.installPostEdgeCaseAcronym() {
     installCaseAcronymGeneratedRoutes(
         object : ServiceLocator {
-            override fun <T : Any> RoutingContext.getService(type: KClass<T>): T {
-                return PostEdgeCaseAcronymController() as T
-            }
+            override fun <T : Any> RoutingContext.getService(type: KClass<T>): T = PostEdgeCaseAcronymController() as T
         },
     )
 }
-

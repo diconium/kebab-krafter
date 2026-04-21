@@ -8,19 +8,15 @@ import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.descriptions.model
 import io.ktor.server.routing.*
 import kotlin.reflect.KClass
 
-class PostEdgeCaseDescriptionController: PostEdgeCaseDescription {
-    override suspend fun CallScope.execute(body: DescriptionResponse): DescriptionResponse {
-        return DescriptionResponse()
-    }
+class PostEdgeCaseDescriptionController : PostEdgeCaseDescription {
+    override suspend fun CallScope.execute(body: DescriptionResponse): DescriptionResponse = DescriptionResponse()
 }
 
 fun Route.installPostEdgeCaseDescription() {
     installCaseDescriptionsGeneratedRoutes(
         object : ServiceLocator {
-            override fun <T : Any> RoutingContext.getService(type: KClass<T>): T {
-                return PostEdgeCaseDescriptionController() as T
-            }
+            override fun <T : Any> RoutingContext.getService(type: KClass<T>): T =
+                PostEdgeCaseDescriptionController() as T
         },
     )
 }
-

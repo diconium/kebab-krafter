@@ -6,10 +6,7 @@ import com.diconium.mobile.tools.kebabkrafter.models.PrimitiveJsonSpec.Primitive
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
-internal class JsonFileParser(
-    private val log: KebabLogger,
-    private val handler: FileHandler,
-) {
+internal class JsonFileParser(private val log: KebabLogger, private val handler: FileHandler) {
 
     private val rootSchema: JsonSchema = json.decodeFromString<JsonSchema>(handler.contents)
     private val imports = mutableSetOf<RefJsonSpec>()

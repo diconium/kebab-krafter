@@ -1,3 +1,4 @@
+import com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorMapper
@@ -176,6 +177,39 @@ ktorServer {
             packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
             className = "CallScope"
             factoryName = "from"
+        }
+    }
+    create("security") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security"
+        specFile = File(rootDir, "testCases/security/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/security/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample.cases.security"
+            className = "SecureCallScope"
+            factoryName = "from"
+        }
+    }
+    create("headersRoute") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.headersRoute"
+        specFile = File(rootDir, "testCases/headersRoute/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/headersRoute/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+        @OptIn(KebabKrafterUnstableApi::class)
+        transformers {
+            ktorTransformer { endpoint, controller ->
+                val first = endpoint.path.getOrNull(0)
+                if (first?.startsWith("v") == true) {
+                    controller.copy(
+                        routeHeaders = listOf("X-Api-Verion" to first),
+                    )
+                } else {
+                    controller
+                }
+            }
         }
     }
     //endregion

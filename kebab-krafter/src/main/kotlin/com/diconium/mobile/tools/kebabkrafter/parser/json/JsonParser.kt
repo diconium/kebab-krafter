@@ -4,10 +4,7 @@ import com.diconium.mobile.tools.kebabkrafter.KebabLogger
 import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile
 import java.io.File
 
-internal class JsonParser(
-    private val log: KebabLogger,
-    private val root: File,
-) {
+internal class JsonParser(private val log: KebabLogger, private val root: File) {
 
     init {
         assert(root.isDirectory) { "'rootFolder' must be a directory" }

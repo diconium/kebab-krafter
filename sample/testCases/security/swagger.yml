@@ -1,0 +1,42 @@
+openapi: '3.0.3'
+
+info:
+  title: Generating authenticated blocks
+  version: '1.0.0'
+
+servers:
+  - description: Local
+    url: http://localhost:8080/testCases/
+
+components:
+  securitySchemes:
+    myLogin: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+
+paths:
+  /login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './models/LoginRequest.json'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: './models/LoginResponse.json'
+  /data:
+    get:
+      security:
+        - myLogin: [ ]
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: './models/UserData.json'

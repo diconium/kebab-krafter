@@ -10,10 +10,7 @@ internal interface KebabLogger {
     fun l(msg: String)
 }
 
-private class NamedKebabLogger(
-    private val logger: Logger,
-    name: String,
-) : KebabLogger {
+private class NamedKebabLogger(private val logger: Logger, name: String) : KebabLogger {
     private val prefix = "$PREFIX.$name |"
     override fun d(msg: String) {
         if (verbose) println("$prefix $msg")

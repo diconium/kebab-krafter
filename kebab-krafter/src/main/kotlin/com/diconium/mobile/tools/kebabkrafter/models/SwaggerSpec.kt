@@ -16,6 +16,7 @@ data class Endpoint(
     val version: String? = null,
     val bodyId: String? = null,
     val errorResponseIds: Map<HttpStatusCode, String> = emptyMap(),
+    val authentication: List<String> = emptyList(),
 )
 
 data class Response(

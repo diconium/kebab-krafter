@@ -20,12 +20,18 @@ class KtorRouteGenerator(
 ) {
 
     fun generate(installFunction: String, controllers: List<KtorController>) {
+        val requiresAuthentication = controllers.any { it.authentication.isNotEmpty() }
         FileSpec.builder(basePackage, "InstallRoutes")
             .indent()
             .addFileComment(AUTO_GENERATOR_WARNING)
             .addImport("io.ktor.server.routing", ktorRouteFunctions)
             .addImport("io.ktor.server.application", "call")
             .addImport("io.ktor.server.request", "receive")
+            .apply {
+                if (requiresAuthentication) {
+                    addImport("io.ktor.server.auth", "authenticate")
+                }
+            }
             .addImport("io.ktor.server.response", "respond", "respondOutputStream", "header")
             .addImport("io.ktor.http", "HttpStatusCode", "ContentType")
             .addImport(context.packageName, context.className)
@@ -49,20 +55,29 @@ class KtorRouteGenerator(
     }.build()
 
     private fun CodeBlock.Builder.generate(controller: KtorController) {
-        fun CodeBlock.Builder.generateHeader(routeHeaders: MutableList<Pair<String, String>>) {
-            if (routeHeaders.isEmpty()) {
-                controlFlow("${controller.ktorFunction}(\"${controller.route}\")") {
-                    generateCall(controller)
-                }
-            } else {
-                val (headerKey, value) = routeHeaders.removeFirst()
-                controlFlow("header(\"$headerKey\", \"$value\")") {
-                    generateHeader(routeHeaders)
-                }
-            }
+        var endControlFlow = 0
+
+        // begin authentication
+        controller.authentication.toSet().forEach { authentication ->
+            endControlFlow++
+            beginControlFlow("authenticate(\"$authentication\")")
         }
 
-        generateHeader(controller.routeHeaders.toMutableList())
+        // begin headers
+        controller.routeHeaders.toSet().forEach { (headerKey, headerValue) ->
+            endControlFlow++
+            beginControlFlow("header(\"$headerKey\", \"$headerValue\")")
+        }
+
+        // actual endpoint
+        controlFlow("${controller.ktorFunction}(\"${controller.route}\")") {
+            generateCall(controller)
+        }
+
+        // close everything
+        repeat(endControlFlow) {
+            endControlFlow()
+        }
     }
 
     private fun CodeBlock.Builder.generateCall(controller: KtorController) {
