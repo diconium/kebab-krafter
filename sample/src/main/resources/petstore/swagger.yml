@@ -34,6 +34,12 @@ paths:
             application/json:
               schema:
                 $ref: './models/v1/PetsResponse.json'
+        '403':
+          description: Failure
+          content:
+            application/json:
+              schema:
+                $ref: './models/v1/error/Error2.json'
     post:
       tags: [ admin ]
       summary: 'Adds a new pet to the store'
@@ -49,6 +55,12 @@ paths:
             application/json:
               schema:
                 $ref: './models/v1/Pet.json'
+        '400':
+          description: Failure
+          content:
+            application/json:
+              schema:
+                $ref: './models/v1/error/Error1.json'
   /v1/pet/{id}:
     parameters:
       - name: id
@@ -79,6 +91,18 @@ paths:
       responses:
         '204':
           description: Successful operation
+        '400':
+          description: Failure
+          content:
+            application/json:
+              schema:
+                $ref: './models/v1/error/Error1.json'
+        '500':
+          description: Failure
+          content:
+            application/json:
+              schema:
+                $ref: './models/v1/error/Error2.json'
 
 
   /v1/pet/{id}/photo:

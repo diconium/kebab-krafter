@@ -1,6 +1,6 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.dataclasses
 
-import com.diconium.mobile.tools.kebabkrafter.Log
+import com.diconium.mobile.tools.kebabkrafter.KebabLogger
 import com.diconium.mobile.tools.kebabkrafter.generator.*
 import com.diconium.mobile.tools.kebabkrafter.models.*
 import com.diconium.mobile.tools.kebabkrafter.models.PrimitiveJsonSpec.Primitive
@@ -15,7 +15,8 @@ import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 import kotlin.time.ExperimentalTime
 
-class DataClassGenerator(
+internal class DataClassGenerator(
+    private val log: KebabLogger,
     private val outputDirectory: File,
     private val basePackageName: String,
     private val path: String,
@@ -23,7 +24,7 @@ class DataClassGenerator(
 ) {
 
     fun generate() {
-        Log.d("DataClassGenerator: packageName($packageName), className($fileClassName)")
+        log.d("DataClassGenerator: packageName($packageName), className($fileClassName)")
         FileSpec
             .builder(packageName, fileClassName)
             .indent()
@@ -40,7 +41,7 @@ class DataClassGenerator(
     }
 
     private fun Map<String, BaseJsonSpec>.models() = this.map { (s, spec) ->
-        Log.d("DataClassGenerator.models() $s / ${spec.smartToString()}")
+        log.d("DataClassGenerator.models() $s / ${spec.smartToString()}")
         model(spec as RootJsonType).build()
     }
 

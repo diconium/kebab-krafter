@@ -1,19 +1,22 @@
 package com.diconium.mobile.tools.kebabkrafter.parser.json
 
-import com.diconium.mobile.tools.kebabkrafter.Log
+import com.diconium.mobile.tools.kebabkrafter.KebabLogger
 import com.diconium.mobile.tools.kebabkrafter.models.*
 import com.diconium.mobile.tools.kebabkrafter.models.PrimitiveJsonSpec.Primitive
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
-class JsonFileParser(private val handler: FileHandler) {
+internal class JsonFileParser(
+    private val log: KebabLogger,
+    private val handler: FileHandler,
+) {
 
     private val rootSchema: JsonSchema = json.decodeFromString<JsonSchema>(handler.contents)
     private val imports = mutableSetOf<RefJsonSpec>()
     private val definitions = mutableMapOf<String, BaseJsonSpec>()
 
     fun parse(): JsonSpecFile {
-        Log.d("- Parsing: ${handler.relativeFile}")
+        log.d("- Parsing: ${handler.relativeFile}")
         val model = parse(rootSchema, handler.name)
 
         // validation
@@ -28,17 +31,17 @@ class JsonFileParser(private val handler: FileHandler) {
             )
         }
 
-        Log.d("  Found ${handler.relativeFile} found ${model::class.java.simpleName}:")
+        log.d("  Found ${handler.relativeFile} found ${model::class.java.simpleName}:")
         if (definitions.isNotEmpty()) {
-            Log.d("  |- contains ${definitions.size} extra definition(s)")
+            log.d("  |- contains ${definitions.size} extra definition(s)")
             definitions.forEach { (name, type) ->
-                Log.d("     |- $name is ${type::class.java.simpleName}")
+                log.d("     |- $name is ${type::class.java.simpleName}")
             }
         }
         if (imports.isNotEmpty()) {
-            Log.d("  |- contains ${imports.size} external import(s)")
+            log.d("  |- contains ${imports.size} external import(s)")
             imports.forEach { ref ->
-                Log.d("     |- ${ref.path}")
+                log.d("     |- ${ref.path}")
             }
         }
         return JsonSpecFile(handler.name, model, definitions.toMap(), imports)
@@ -153,7 +156,7 @@ class JsonFileParser(private val handler: FileHandler) {
             else -> {
                 // external definitions with relative path
                 val handler = handler.handlerOf(schema.ref)
-                val ref = JsonFileParser(handler).parse()
+                val ref = JsonFileParser(log, handler).parse()
                 if (ref.model is PrimitiveJsonSpec) {
                     // pre-parse any primitive external reference
                     PrimitiveJsonSpec(
@@ -185,7 +188,7 @@ class JsonFileParser(private val handler: FileHandler) {
             // case it's a reference, let's parse that reference
             if (result is RefJsonSpec) {
                 val handler = handler.handlerFromRoot(result.path)
-                val ref = JsonFileParser(handler).parse()
+                val ref = JsonFileParser(log, handler).parse()
                 require(ref.model is ConcreteJsonType) {
                     throw IllegalArgumentException("Referenced ${ref.model.smartToString()} is not valid sealed type")
                 }
@@ -194,9 +197,9 @@ class JsonFileParser(private val handler: FileHandler) {
                 imports.addAll(ref.imports)
 
                 if (ref.definitions.isNotEmpty()) {
-                    Log.d("PARSER: adding ${ref.definitions.size} from ${ref.name} / ${ref.model.smartToString()}")
+                    log.d("PARSER: adding ${ref.definitions.size} from ${ref.name} / ${ref.model.smartToString()}")
                     ref.definitions.forEach { (string, spec) ->
-                        Log.d("PARSER: $string / ${spec.smartToString()}")
+                        log.d("PARSER: $string / ${spec.smartToString()}")
                     }
                 }
                 definitions.putAll(ref.definitions)
@@ -259,7 +262,7 @@ class JsonFileParser(private val handler: FileHandler) {
 
                     is RefJsonSpec -> {
                         val handler = handler.handlerFromRoot(result.path)
-                        val ref = JsonFileParser(handler).parse()
+                        val ref = JsonFileParser(log, handler).parse()
                         require(ref.model is EnumJsonType) {
                             throw IllegalArgumentException(
                                 "Defined ${ref.model.smartToString()} " +

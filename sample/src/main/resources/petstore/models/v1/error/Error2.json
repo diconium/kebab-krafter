@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A place on earth",
+  "type": "object",
+  "required": [
+    "code",
+    "message"
+  ],
+  "properties": {
+    "code": {
+      "description": "One of the predefined error codes",
+      "type": "string"
+    },
+    "message": {
+      "description": "Short message explaining the error",
+      "type": "string"
+    }
+  }
+}

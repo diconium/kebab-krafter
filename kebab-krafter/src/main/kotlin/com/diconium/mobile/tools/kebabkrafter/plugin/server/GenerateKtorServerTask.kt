@@ -1,9 +1,9 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
-import com.diconium.mobile.tools.kebabkrafter.Log
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.ContextSpec
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.Transformers
 import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.generateKtorServerFor
+import com.diconium.mobile.tools.kebabkrafter.named
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Console
@@ -20,17 +20,9 @@ abstract class GenerateKtorServerTask : DefaultTask() {
 
     @TaskAction
     fun action() {
-        if (log.get()) Log.logger = logger
-        try {
-            generateKtorServerFor()
-        } finally {
-            Log.logger = null
-        }
-    }
-
-    private fun generateKtorServerFor() {
         with(ktorServerInput.get()) {
             generateKtorServerFor(
+                log = logger.named(name),
                 packageName = packageName.get(),
                 baseDir = outputFolder.get().asFile,
                 specFile = specFile.get(),
