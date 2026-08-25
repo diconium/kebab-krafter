@@ -1,0 +1,16 @@
+openapi: '3.0.3'
+
+info:
+  title: Parsing of names with acronyms
+  version: '1.0.0'
+
+paths:
+  /enum-inside/sealedClass:
+    get:
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: 'models/InlineInSealedClassResponse.json'

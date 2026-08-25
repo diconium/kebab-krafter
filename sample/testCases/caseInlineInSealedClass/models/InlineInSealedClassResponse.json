@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A oneOf that its subclass contain an inline enum and classes",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "./Option1.json" },
+    { "$ref": "./Option2.json" }
+  ]
+}

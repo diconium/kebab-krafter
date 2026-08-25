@@ -189,6 +189,16 @@ ktorServer {
             factoryName = "from"
         }
     }
+    create("caseInlineInSealedClass") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass"
+        specFile = File(rootDir, "testCases/caseInlineInSealedClass/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/caseInlineInSealedClass/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
     create("headersRoute") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.headersRoute"
         specFile = File(rootDir, "testCases/headersRoute/swagger.yml")

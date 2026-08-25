@@ -59,11 +59,11 @@ internal class DataClassGenerator(
     private fun concreteModel(model: ConcreteJsonType, parents: List<String>): TypeSpec.Builder {
         // handler for concrete models inside concrete models
         // to export is as Kotlin, we need to refer the classname by their parent classes too
-        //
-        val nextParents = if (parents.contains(model.name.toPascalCase())) {
+        val modelName = model.name.toPascalCase()
+        val nextParents = if (parents.contains(modelName)) {
             parents
         } else {
-            parents + model.name.toPascalCase()
+            parents + modelName
         }
 
         val types = model.fields.associateWith { field ->
@@ -71,7 +71,7 @@ internal class DataClassGenerator(
         }
 
         return TypeSpec
-            .classBuilder(ClassName(packageName, model.name.toPascalCase()))
+            .classBuilder(ClassName(packageName, modelName))
             .apply { model.description?.let(::addKdoc) }
             .addAnnotation(Serializable::class)
             .dataClass()
@@ -119,7 +119,8 @@ internal class DataClassGenerator(
     }
 
     private fun sealedModel(model: SealedJsonType): TypeSpec.Builder {
-        val sealedClass = ClassName(packageName, model.name.toPascalCase())
+        val parentName = model.name.toPascalCase()
+        val sealedClass = ClassName(packageName, parentName)
         val jsonDiscriminatorKey = mutableSetOf<String>()
         return TypeSpec
             .classBuilder(sealedClass)
@@ -129,7 +130,7 @@ internal class DataClassGenerator(
             .addTypes(
                 model.types.map { (discriminator, type) ->
                     jsonDiscriminatorKey.add(discriminator.key)
-                    concreteModel(type, emptyList())
+                    concreteModel(type, listOf(parentName))
                         .superclass(sealedClass)
                         .addAnnotation(serialNameAnnotation(discriminator.value))
                         .build()

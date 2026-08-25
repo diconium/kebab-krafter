@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A class with an inline enum",
+  "type": "object",
+  "required": [
+    "discriminator",
+    "id"
+  ],
+  "properties": {
+    "discriminator": {
+      "const": "option2"
+    },
+    "id": {
+      "description": "UUID",
+      "type": "string"
+    },
+    "extra": {
+      "description": "Test generation of inlined objects",
+      "type": "object",
+      "properties": {
+        "foo": {
+          "type": "string"
+        },
+        "bar": {
+          "$ref": "#/$defs/defExtra"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "defExtra": {
+      "type": "object",
+      "description": "Test defExtra",
+      "properties": {
+        "recursive": {
+          "type": "object",
+          "description": "Test object in object in def",
+          "properties": {
+            "reRecursive": {
+              "type": "object",
+              "description": "Test object in object in object in def",
+              "properties": {
+                "value2": {
+                  "type": "string"
+                },
+                "variation": {
+                  "description": "Deep nested enum",
+                  "type": "string",
+                  "enum": [
+                    "Value1",
+                    "Value2",
+                    "Value3"
+                  ]
+                }
+              }
+            },
+            "value1": {
+              "type": "string"
+            }
+          }
+        },
+        "defArrayInDef": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/defInDef"
+          }
+        },
+        "defInDef": {
+          "$ref": "#/$defs/defInDef"
+        }
+      }
+    },
+    "defInDef": {
+      "type": "object",
+      "description": "Def linked from another def",
+      "properties": {
+        "value3": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

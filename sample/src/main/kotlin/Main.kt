@@ -44,6 +44,7 @@ fun Application.module() {
             installPostEdgeCaseDescription()
             installSecurityGeneratedRoutes()
             installHeadersRouteGeneratedRoutes()
+            installGetSealedClass()
         }
 
         // ktor can also be serving its own swagger API

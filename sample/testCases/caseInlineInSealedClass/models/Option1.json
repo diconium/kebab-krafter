@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "A class with an inline enum",
+  "type": "object",
+  "required": [
+    "discriminator",
+    "type"
+  ],
+  "properties": {
+    "discriminator": {
+      "const": "option1"
+    },
+    "type1": {
+      "description": "An enum value type 1",
+      "type": "string",
+      "enum": [
+        "value-a",
+        "value-b",
+        "value-c"
+      ]
+    },
+    "type2": {
+      "$ref": "#/$defs/type2"
+    }
+  },
+  "$defs": {
+    "type2": {
+      "description": "An enum value type 2",
+      "type": "string",
+      "enum": [
+        "value-x",
+        "value-y",
+        "value-z"
+      ]
+    }
+  }
+}

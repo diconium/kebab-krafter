@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 local.properties
 versions.properties
+**/.kotlin/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
