@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report and help improving this project
-title: 'Network Generator Bug Report'
+title: 'Kebab-Krafter Bug Report'
 labels: 'bug'
 ---
 

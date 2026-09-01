@@ -1,0 +1,38 @@
+name: "On Pull Request"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  assemble:
+    name: Assemble the project and sample
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: 'gradle'
+          cache-dependency-path: |
+            **/*.gradle*
+            **/gradle.properties
+            **/gradle-wrapper.properties
+            **/gradle/libs.versions.toml
+
+      - name: Build
+        working-directory: kebab-krafter
+        run: ./gradlew licensee ktlintCheck assemble
+
+      - name: Build
+        working-directory: sample
+        run: ./gradlew licensee ktlintCheck assemble
+

@@ -29,4 +29,4 @@ How to test changes? Please give a desciption.
 - [ ] I have made corresponding changes to the documentation
 - [ ] My changes follow the CONTRIBUTION guidelines
 - [ ] My comments follow the CODE oF CONDUCT
-- [ ] If my changes introduce external components, the component licenses are following the LICENSE GUIDELINES
+- [ ] If my changes introduce external components, the component licenses are following the LICENSE GUIDELINES

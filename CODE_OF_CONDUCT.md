@@ -1,5 +1,7 @@
 # Contributor Covenant Code of Conduct
 
+Be Excellent to Each Other!
+
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
@@ -55,7 +57,7 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project maintainers: **@rvp-diconium** | **@ToSchi030**. 
+reported by contacting the project maintainers: **@budius**. 
 
 All complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is

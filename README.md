@@ -12,7 +12,7 @@
 <p>
 Available for:
     <br> - Ktor Server
-    <br> - Ktor Client (soon) 
+    <br> - Ktor Client (almost here) 
     <br> - Swift client (hopefully)
 </p>
 
@@ -27,7 +27,7 @@ Kebab-Krafter is a gradle plugin to auto-generate network interfaces from a set 
 To start using the plugin just add to your `build.gradle.kts` file:
 
 ```kotlin
-id("com.diconium.mobile.tools.kebab-krafter") version "latest_version"
+id("io.github.budius.kebab-krafter") version "latest_version"
 ```
 
 ### Generate Ktor Server
@@ -44,6 +44,7 @@ ktorServer {
 
 		// file system location for the swagger spec
 		specFile = File(rootDir, "swagger/api.yml")
+		schemasFolder = File(rootDir, "swagger/models/")
 
 		// definition for the receiver class for the API controllers
 		contextSpec {
@@ -131,7 +132,4 @@ This way you can control when the code is generated, but it will still be linked
 
 ## Authors <a name = "authors"></a>
 
-- [@rvp-diconium](https://github.com/rvp-diconium)
-
-See also the list of [contributors](https://github.com/diconium/kebab-krafter/contributors) who participated in
-this project.
+- [@budius](https://github.com/budius)

@@ -12,3 +12,7 @@ ktlint_standard_no-wildcard-imports = disabled
 [*.json]
 indent_style = space
 indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2

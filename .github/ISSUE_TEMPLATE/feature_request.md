@@ -1,9 +1,8 @@
 ---
 name: Feature request
 about: Add your feature request
-title: 'Network Generator Feature Request'
+title: 'Kebab-Krafter Feature Request'
 labels: 'feature'
-
 ---
 
 **Is your feature request related to a problem? Please describe.**
