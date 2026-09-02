@@ -45,15 +45,15 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint_version" 
 
 [versions]
 
-kotlin_version = "2.2.20"
-kotlin_poet = "2.2.0"
-ktor_version = "3.3.1"
-json_org_version = "20250517"
-snakeyaml_version = "2.5"
-swagger_parser_version = "2.1.34"
-gradle_plugin_version = "2.0.0"
+kotlin_version = "2.4.10"
+kotlin_poet = "2.3.0"
+ktor_version = "3.5.2"
+json_org_version = "20260814"
+snakeyaml_version = "2.7"
+swagger_parser_version = "2.1.48"
+gradle_plugin_version = "2.1.1"
 licensee_version = "1.14.1"
-ktlint_version = "13.1.0"
+ktlint_version = "14.2.0"
 jUnit5 = "5.14.2"
 
 [libraries]

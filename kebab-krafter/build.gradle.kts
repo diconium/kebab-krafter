@@ -8,8 +8,14 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
+val isCiEnvironment = System.getenv("CI")?.toBoolean() == true
+
 group = "io.github.budius"
-version = "2.6.1"
+version = if (isCiEnvironment) {
+    System.getenv("KEBAB_VERSION") ?: throw IllegalArgumentException("Missing `KEBAB_VERSION` environment variable.")
+} else {
+    "0.0.1-SNAPSHOT"
+}
 
 repositories {
     mavenCentral()
@@ -52,10 +58,16 @@ licensee {
     allow("Apache-2.0")
     allow("MIT")
     allowUrl("https://opensource.org/license/mit")
-    allowUrl("http://www.eclipse.org/org/documents/edl-v10.php") { because("Eclipse Distribution License - v 1.0") }
-    allowUrl("https://github.com/Him188/yamlkt/blob/master/LICENSE") { because("Apache License 2.0") }
-    allowUrl("http://www.mozilla.org/MPL/2.0/index.txt") { because("Mozilla Public License") }
-    allowUrl("https://github.com/stleary/JSON-java/blob/master/LICENSE") { because("Public Domain") }
+
+    // used in the project
+    allowUrl("https://github.com/stleary/JSON-java/blob/master/LICENSE") { because("org.json.*, Public Domain") }
+
+    // used by dependencies
+    allowUrl("https://github.com/Him188/yamlkt/blob/master/LICENSE") { because("Used by Ktor, Apache License 2.0") }
+    allowUrl("http://www.eclipse.org/org/documents/edl-v10.php") {
+        because("Used by Swagger, Eclipse Distribution License - v 1.0")
+    }
+    allowUrl("http://www.mozilla.org/MPL/2.0/index.txt") { because("Used by Swagger, Mozilla Public License") }
 }
 
 ktlint { android = false }
@@ -64,7 +76,7 @@ gradlePlugin {
     plugins {
         create("kebabkrafter") {
             id = "io.github.budius.kebab-krafter"
-            displayName = "Kebab Krafter (Fork)"
+            displayName = "Kebab Krafter"
             implementationClass = "com.diconium.mobile.tools.kebabkrafter.plugin.KebabKrafter"
             description = "Generates all the boring network API code from a Swagger spec."
             website = "https://github.com/budius/kebab-krafter"

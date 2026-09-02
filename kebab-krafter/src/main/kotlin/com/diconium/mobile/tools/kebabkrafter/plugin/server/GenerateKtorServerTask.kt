@@ -6,10 +6,12 @@ import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.generateKtorS
 import com.diconium.mobile.tools.kebabkrafter.named
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Console
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 
+@CacheableTask
 abstract class GenerateKtorServerTask : DefaultTask() {
 
     @get:Console

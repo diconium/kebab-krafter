@@ -1,16 +1,17 @@
-name: "On Pull Request"
+name: Update Gradle dependency versions
 
 on:
-  pull_request:
-  workflow_dispatch:
+  push:
+    tags:
+      - '*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  checks:
-    name: Pull Request Checks
+  release:
+    name: Assemble the project and sample
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,14 +29,16 @@ jobs:
             **/gradle-wrapper.properties
             **/gradle/libs.versions.toml
 
-      - name: Build - Plugin
+      - name: Final checks
         working-directory: kebab-krafter
         env:
           KEBAB_VERSION: 0.0.1-SNAPSHOT
         run: ./gradlew check
 
-      - name: Build - Sample
-        working-directory: sample
+      - name: Publish Kebab-Krafter to Gradle Plugins
+        working-directory: kebab-krafter
         env:
-          KEBAB_VERSION: 0.0.1-SNAPSHOT
-        run: ./gradlew check
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+          KEBAB_VERSION: ${{ github.ref_name }}
+        run: ./gradlew publishPlugins

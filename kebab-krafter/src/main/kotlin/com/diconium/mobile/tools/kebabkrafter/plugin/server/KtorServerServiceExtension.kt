@@ -20,13 +20,14 @@ abstract class KtorServerServiceExtension(@get:Input val name: String) {
      * Swagger YAML spec file
      */
     @get:InputFile
-    @get:PathSensitive(PathSensitivity.NONE)
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val specFile: Property<File>
 
     /**
      * Base folder where all the schemas are located (used for Gradle caching)
      */
     @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val schemasFolder: DirectoryProperty
 
     /**
