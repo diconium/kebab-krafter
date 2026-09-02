@@ -1,3 +1,4 @@
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -82,6 +83,12 @@ gradlePlugin {
             website = "https://github.com/budius/kebab-krafter"
             vcsUrl = "https://github.com/budius/kebab-krafter.git"
             tags = listOf("swagger", "codegen", "generator", "ktor", "http", "backend")
+
+            compatibility {
+                features {
+                    configurationCache = true
+                }
+            }
         }
     }
 }
