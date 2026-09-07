@@ -17,9 +17,16 @@ class KtorControllerGenerator(private val basePackage: String, private val conte
             FunSpec
                 .builder("execute")
                 .receiver(context)
+                .markDeprecated(controller.deprecated)
                 .makeAbstractFunction()
                 .build()
         }
+
+        val interfaceSpec = TypeSpec
+            .interfaceBuilder(poet.controllerClassName)
+            .markDeprecated(controller.deprecated)
+            .addFunction(function)
+            .build()
 
         val supportClass = with(poet) {
             TypeSpec.classBuilder(poet.supportClassName)
@@ -31,7 +38,7 @@ class KtorControllerGenerator(private val basePackage: String, private val conte
         return FileSpec.builder(poet.controllerClassName)
             .indent()
             .addFileComment(AUTO_GENERATOR_WARNING)
-            .addType(TypeSpec.interfaceBuilder(poet.controllerClassName).addFunction(function).build())
+            .addType(interfaceSpec)
             .apply { supportClass?.let { addType(it) } }
             .build()
     }

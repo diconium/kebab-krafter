@@ -57,6 +57,7 @@ data class ConcreteJsonType(
         /** description added to the field should override the one in the source */
         val description: String?,
         val isRequired: Boolean,
+        val isDeprecated: Boolean,
     )
 }
 

@@ -53,6 +53,7 @@ internal class SwaggerParser(private val log: KebabLogger) {
             path = key.split("/").filter { it.isNotBlank() },
             method = method,
             tags = operation.tags ?: emptyList(),
+            deprecated = operation.deprecated == true,
             queryParameters = parameters.filter { it.`in` == "query" }.associate(::paramMapper),
             pathParameters = parameters.filter { it.`in` == "path" }.associate(::paramMapper),
             response = parseSuccessResponse(operation),

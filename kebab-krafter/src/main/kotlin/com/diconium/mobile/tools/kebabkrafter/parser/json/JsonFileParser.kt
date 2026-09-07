@@ -116,7 +116,13 @@ internal class JsonFileParser(private val log: KebabLogger, private val handler:
             val type: BaseJsonSpec = parse(definition, name)
             val description = definition.description ?: type.description
             val isRequired = schema.required.contains(name)
-            ConcreteJsonType.JsonSpecField(name, type, description, isRequired)
+            ConcreteJsonType.JsonSpecField(
+                name = name,
+                type = type,
+                description = description,
+                isRequired = isRequired,
+                isDeprecated = definition.deprecated == true,
+            )
         }
         return ConcreteJsonType(schema.description, handler.relativePackageName, objectName, fields)
     }

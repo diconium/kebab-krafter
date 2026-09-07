@@ -188,6 +188,16 @@ ktorServer {
             factoryName = "from"
         }
     }
+    create("caseDeprecated") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.deprecated"
+        specFile = File(rootDir, "testCases/caseDeprecated/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/caseDeprecated/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
     create("headersRoute") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.headersRoute"
         specFile = File(rootDir, "testCases/headersRoute/swagger.yml")
@@ -283,6 +293,11 @@ ktorClient {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.inlinesealedclass"
         specFile = File(rootDir, "testCases/caseInlineInSealedClass/swagger.yml")
         schemasFolder = File(rootDir, "testCases/caseInlineInSealedClass/models/")
+    }
+    create("caseDeprecated") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.deprecated"
+        specFile = File(rootDir, "testCases/caseDeprecated/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/caseDeprecated/models/")
     }
     create("headersRoute") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.headersRoute"

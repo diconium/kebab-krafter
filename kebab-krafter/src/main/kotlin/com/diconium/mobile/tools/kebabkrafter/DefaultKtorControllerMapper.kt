@@ -45,6 +45,7 @@ object DefaultKtorControllerMapper : KtorMapper {
         return KtorController(
             ktorFunction = endpoint.method.function(),
             path = endpoint.path,
+            deprecated = endpoint.deprecated,
             routeHeaders = endpoint.routeHeaders,
             authentication = endpoint.authentication,
             packageName = packageName.replace("-", "").replace("_", "").lowercase(),

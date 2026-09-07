@@ -10,6 +10,7 @@ data class Endpoint(
     val method: HttpMethod,
     val tags: List<String>,
     val response: Response,
+    val deprecated: Boolean,
     val queryParameters: Map<String, UrlType> = emptyMap(),
     val pathParameters: Map<String, UrlType> = emptyMap(),
     val routeHeaders: List<Pair<String, String>> = emptyList(),

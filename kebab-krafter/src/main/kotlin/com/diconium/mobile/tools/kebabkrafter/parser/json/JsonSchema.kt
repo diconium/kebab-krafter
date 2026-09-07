@@ -34,6 +34,8 @@ data class JsonSchema(
     val maximum: Long?,
     val exclusiveMaximum: Long?,
 
+    val deprecated: Boolean?,
+
     /** additionalProperties is used to create maps */
     val additionalProperties: JsonSchema? = null,
 ) {

@@ -24,10 +24,12 @@ internal class KtorClientGenerator(
         val interfaceSpec = with(poet) {
             TypeSpec
                 .funInterfaceBuilder(poet.controllerClassName)
+                .markDeprecated(controller.deprecated)
                 .addFunction(
                     FunSpec
                         .builder("invoke")
                         .addModifiers(KModifier.OPERATOR)
+                        .markDeprecated(controller.deprecated)
                         .makeAbstractFunction()
                         .applySafeReturn(responseType())
                         .build(),
@@ -55,6 +57,7 @@ internal class KtorClientGenerator(
     private fun buildExtensionProperty(poet: PoetController, controller: KtorController) = PropertySpec
         .builder(controller.className.toCamelCase(), poet.controllerClassName)
         .apply { controller.kdoc?.let(::addKdoc) }
+        .markDeprecated(controller.deprecated)
         .receiver(HttpClient::class)
         .getter(buildExtensionFunction(poet, controller).toBuilder(name = "get()").build())
         .build()

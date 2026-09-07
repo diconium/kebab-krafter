@@ -93,6 +93,7 @@ internal class DataClassGenerator(
                     PropertySpec
                         .builder(name, types[field]!!)
                         .initializer(name)
+                        .markFieldDeprecated(field.isDeprecated)
                         .addAnnotation(serialNameAnnotation(field.name))
                         .apply {
                             if (field.type is PrimitiveJsonSpec && field.type.primitive is Primitive.DateSpec) {

@@ -15,6 +15,7 @@ data class KtorController(
     val kdoc: String?,
     val request: Request,
     val response: Response,
+    val deprecated: Boolean,
 ) {
     data class Request(
         val pathParameters: List<Pair<String, UrlType>>,
