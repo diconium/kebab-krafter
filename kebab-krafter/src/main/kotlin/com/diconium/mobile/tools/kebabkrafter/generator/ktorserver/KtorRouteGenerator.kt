@@ -1,17 +1,18 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
 
+import com.diconium.mobile.tools.kebabkrafter.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.AUTO_GENERATOR_WARNING
+import com.diconium.mobile.tools.kebabkrafter.generator.PoetController
 import com.diconium.mobile.tools.kebabkrafter.generator.indent
 import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
 import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
 import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
 import com.diconium.mobile.tools.kebabkrafter.models.UrlType
+import com.diconium.mobile.tools.kebabkrafter.requiresSupportClass
 import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import java.io.File
-import kotlin.reflect.KClass
 
 class KtorRouteGenerator(
     private val basePackage: String,
@@ -36,7 +37,6 @@ class KtorRouteGenerator(
             .addImport("io.ktor.http", "HttpStatusCode", "ContentType")
             .addImport(context.packageName, context.className)
             .addFunction(installFunction(installFunction, controllers))
-            .addType(serviceLocatorInterface())
             .build()
             .writeTo(outputDirectory)
     }
@@ -44,7 +44,7 @@ class KtorRouteGenerator(
     private fun installFunction(name: String, controllers: List<KtorController>) = FunSpec
         .builder(name)
         .receiver(Route::class)
-        .addParameter("locator", serviceLocatorClass)
+        .addParameter("locator", ServiceLocatorGenerator.serviceLocatorClass)
         .addCode(installFunctionCode(controllers))
         .build()
 
@@ -70,7 +70,7 @@ class KtorRouteGenerator(
         }
 
         // actual endpoint
-        controlFlow("${controller.ktorFunction}(\"${controller.route}\")") {
+        controlFlow("${controller.ktorFunction}(\"${controller.path.joinToString("/")}\")") {
             generateCall(controller)
         }
 
@@ -127,8 +127,6 @@ class KtorRouteGenerator(
             ResponseType.Binary -> generateBinaryResponse(controller.response)
         }
     }
-
-    private val serviceLocatorClass = ClassName(basePackage, "ServiceLocator")
 }
 
 private fun CodeBlock.Builder.controlFlow(controlFlow: String, vararg args: Any?, block: CodeBlock.Builder.() -> Unit) {
@@ -177,21 +175,6 @@ private fun CodeBlock.Builder.generateBinaryResponse(response: KtorController.Re
             addStatement("incoming.copyTo(this)")
         }
     }
-}
-
-private fun serviceLocatorInterface(): TypeSpec {
-    val t = TypeVariableName("T", Any::class)
-    return TypeSpec.interfaceBuilder("ServiceLocator")
-        .addFunction(
-            FunSpec.builder("getService")
-                .receiver(RoutingContext::class)
-                .addModifiers(KModifier.ABSTRACT)
-                .addTypeVariable(t)
-                .addParameter("type", KClass::class.asClassName().parameterizedBy(t))
-                .returns(t)
-                .build(),
-        )
-        .build()
 }
 
 private val ktorRouteFunctions = listOf("header", "get", "post", "put", "patch", "delete", "put", "options")

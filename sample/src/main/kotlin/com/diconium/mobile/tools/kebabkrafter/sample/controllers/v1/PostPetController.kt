@@ -1,10 +1,10 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1
 
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.PostPet
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.Pet
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.PostPetRequest
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.common.Color
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.controllers.v1.PostPet
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.Pet
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.PostPetRequest
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.common.Color
 
 class PostPetController(private val createPet: suspend (Pet) -> Pet) : PostPet {
     override suspend fun CallScope.execute(body: PostPetRequest): Pet {

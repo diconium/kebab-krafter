@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
+package com.diconium.mobile.tools.kebabkrafter
 
 import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
 import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
@@ -7,7 +7,7 @@ import io.ktor.http.*
 
 data class KtorController(
     val ktorFunction: String,
-    val route: String,
+    val path: List<String>,
     val routeHeaders: List<Pair<String, String>>,
     val authentication: List<String>,
     val packageName: String,

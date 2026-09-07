@@ -1,8 +1,8 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.db
 
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.Pet
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.PetsResponse
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.common.Color
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.Pet
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.PetsResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.common.Color
 import kotlin.time.Instant
 
 // here's some fake database responses

@@ -1,7 +1,7 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases.security
 
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security.controllers.GetData
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security.models.UserData
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.controllers.GetData
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.models.UserData
 
 class GetDataController : GetData {
     override suspend fun SecureCallScope.execute(): UserData {

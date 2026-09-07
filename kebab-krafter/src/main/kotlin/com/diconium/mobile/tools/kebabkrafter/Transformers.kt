@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
+package com.diconium.mobile.tools.kebabkrafter
 
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile

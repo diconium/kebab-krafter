@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.plugin.server
+package com.diconium.mobile.tools.kebabkrafter.plugin.client
 
 import com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi
 import com.diconium.mobile.tools.kebabkrafter.plugin.TransformerSpec
@@ -8,7 +8,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import java.io.File
 
-abstract class KtorServerServiceExtension(@get:Input val name: String) {
+abstract class KtorClientServiceExtension(@get:Input val name: String) {
 
     //region input
     /**
@@ -30,25 +30,6 @@ abstract class KtorServerServiceExtension(@get:Input val name: String) {
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val schemasFolder: DirectoryProperty
-
-    /**
-     * Specification for the custom context where and API call is executed
-     */
-    @get:Nested
-    abstract val contextSpec: ContextSpecExtension
-
-    /**
-     * Name of the route installation function
-     */
-    @get:Input
-    abstract val installFunction: Property<String>
-
-    /**
-     * Specification for the custom context where and API call is executed
-     */
-    fun contextSpec(action: Action<ContextSpecExtension>) {
-        action.execute(contextSpec)
-    }
     //endregion
 
     //region output
@@ -74,5 +55,5 @@ abstract class KtorServerServiceExtension(@get:Input val name: String) {
     fun transformers(action: Action<TransformerSpec>) {
         action.execute(transformerSpec)
     }
-//endregion
+    //endregion
 }

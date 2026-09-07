@@ -2,8 +2,8 @@ package com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1
 
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.PetStoreException
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.GetPetIdPdf
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.controllers.v1.GetPetIdPdfResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.controllers.v1.GetPetIdPdf
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.controllers.v1.GetPetIdPdfResponse
 import io.ktor.http.*
 
 class GetPetIdPdfController : GetPetIdPdf {

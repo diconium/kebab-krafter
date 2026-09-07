@@ -1,8 +1,8 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases.security
 
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security.controllers.PostLogin
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security.models.LoginRequest
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security.models.LoginResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.controllers.PostLogin
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.models.LoginRequest
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.models.LoginResponse
 import kotlinx.coroutines.delay
 import kotlin.io.encoding.Base64
 import kotlin.time.Duration.Companion.milliseconds

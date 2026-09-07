@@ -2,14 +2,26 @@
 
 [bundles]
 
-ktor = [
+ktor-server = [
     "ktor-server-core",
     "ktor-server-cio",
     "ktor-server-cors",
     "ktor-server-swagger",
     "ktor-server-content-negotiation",
     "ktor-serialization",
-    "ktor-server-auth"
+    "ktor-server-auth",
+    "ktor-server-auth-api-key"
+]
+
+ktor-client = [
+    "ktor-client-core",
+    "ktor-client-cio",
+    "ktor-client-okhttp",
+    "ktor-client-auth",
+    "ktor-client-logging",
+    "ktor-client-encoding",
+    "ktor-client-content",
+    "ktor-serialization"
 ]
 
 [plugins]
@@ -40,6 +52,16 @@ ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "k
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor_version" }
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor_version" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor_version" }
+ktor-server-auth-api-key = { module = "io.ktor:ktor-server-auth-api-key", version.ref = "ktor_version" }
+
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor_version" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor_version" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor_version" }
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor_version" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor_version" }
+ktor-client-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor_version" }
+ktor-client-content = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor_version" }
+ktor-client-test = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor_version" }
 
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin_serialization_version" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx_datetime_versiom" }

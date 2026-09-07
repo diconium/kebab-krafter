@@ -1,20 +1,13 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin.server
 
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.EndpointTransformer
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.DefaultKtorControllerMapper
 import com.diconium.mobile.tools.kebabkrafter.generator.toCamelCase
 import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
-import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
-import org.gradle.api.Action
+import com.diconium.mobile.tools.kebabkrafter.plugin.DefaultEndpointTransformer
+import com.diconium.mobile.tools.kebabkrafter.plugin.DefaultKtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.plugin.registerTask
 import org.gradle.api.DefaultTask
-import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.plugins.ExtensionAware
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.SourceSetContainer
 
 fun applyGenerateKtorServer(target: Project) {
     // create extension
@@ -27,11 +20,20 @@ fun applyGenerateKtorServer(target: Project) {
         it.group = "generator"
     }
 
+    val serviceLocatorTask = target.tasks.register(
+        "generateKtorServerServiceLocator",
+        KtorServerServiceLocatorTask::class.java,
+    ) { task ->
+        val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/serviceLocator/")
+        task.outputFolder.convention(output)
+    }
+
+    // wire task output to the main source set
+    target.registerTask(serviceLocatorTask)
+
     ktorServer.services.whenObjectAdded { ktorServerInput ->
 
-        require(ktorServerInput.name.isBlank().not()) {
-            "Service name cannot be empty, use `default{}` instead"
-        }
+        require(ktorServerInput.name.isBlank().not()) { "Service name cannot be empty" }
         val folderName = ktorServerInput.name.toCamelCase()
         val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/$folderName/")
         ktorServerInput.outputFolder.convention(output)
@@ -46,37 +48,11 @@ fun applyGenerateKtorServer(target: Project) {
             // it.group = "generator"
             it.ktorServerInput.set(ktorServerInput)
             it.log.set(ktorServer.log)
+            it.dependsOn(serviceLocatorTask)
         }
         baseTask.configure { it.dependsOn(task) }
 
         // wire task output to the main source set
-        target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-            target.sourceSets { container ->
-                container.main.configure { sourceSet ->
-                    sourceSet.java.srcDirs(task)
-                    sourceSet.kotlin.srcDirs(task)
-                }
-            }
-        }
+        target.registerTask(task)
     }
-}
-
-// those are copied from those auto-generated accessors files,
-// just to make the usage above a bit cleaner.
-private fun Project.sourceSets(configure: Action<SourceSetContainer>): Unit =
-    (this as ExtensionAware).extensions.configure("sourceSets", configure)
-
-private val SourceSetContainer.main: NamedDomainObjectProvider<SourceSet>
-    get() = named("main")
-
-private val SourceSet.kotlin: SourceDirectorySet
-    get() = (this as ExtensionAware).extensions.getByName("kotlin")
-        as SourceDirectorySet
-
-private class DefaultEndpointTransformer : EndpointTransformer {
-    override fun transform(endpoint: Endpoint) = endpoint
-}
-
-private class DefaultKtorTransformer : KtorTransformer {
-    override fun transform(endpoint: Endpoint, controller: KtorController) = controller
 }

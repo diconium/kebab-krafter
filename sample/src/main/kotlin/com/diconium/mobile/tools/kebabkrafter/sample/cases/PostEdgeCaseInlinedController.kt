@@ -1,12 +1,12 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases
 
+import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined.ServiceLocator
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined.controllers.PostEdgeCaseInlined
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined.installCaseInlinedGeneratedRoutes
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined.models.InlinedResponse
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined.models.InlinedResponse.DefExtra.Recursive.ReRecursive
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined.models.InlinedResponse.DefInDef
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined.controllers.PostEdgeCaseInlined
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined.installCaseInlinedGeneratedRoutes
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined.models.InlinedResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined.models.InlinedResponse.DefExtra.Recursive.ReRecursive
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined.models.InlinedResponse.DefInDef
 import io.ktor.server.routing.*
 import kotlin.reflect.KClass
 

@@ -156,3 +156,20 @@ paths:
                 format: binary
         '404':
           description: Pet not found
+  /v2/pets:
+    get:
+      tags: [ general ]
+      summary: 'Provides a list of pets from the store'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: './models/v1/PetsResponse.json'
+        '403':
+          description: Failure
+          content:
+            application/json:
+              schema:
+                $ref: './models/v1/error/Error2.json'

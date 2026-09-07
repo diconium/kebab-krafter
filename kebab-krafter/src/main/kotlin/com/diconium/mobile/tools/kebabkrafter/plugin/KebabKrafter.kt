@@ -1,5 +1,6 @@
 package com.diconium.mobile.tools.kebabkrafter.plugin
 
+import com.diconium.mobile.tools.kebabkrafter.plugin.client.applyGenerateKtorClient
 import com.diconium.mobile.tools.kebabkrafter.plugin.server.applyGenerateKtorServer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -7,5 +8,6 @@ import org.gradle.api.Project
 class KebabKrafter : Plugin<Project> {
     override fun apply(target: Project) {
         applyGenerateKtorServer(target)
+        applyGenerateKtorClient(target)
     }
 }

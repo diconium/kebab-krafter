@@ -1,7 +1,7 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases
 
+import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.controllers.enuminside.GetSealedClass
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.installCaseInlineInSealedClassGeneratedRoutes
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.models.InlineInSealedClassResponse

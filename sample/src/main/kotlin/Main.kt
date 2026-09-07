@@ -3,7 +3,7 @@ import com.diconium.mobile.tools.kebabkrafter.sample.RealServices
 import com.diconium.mobile.tools.kebabkrafter.sample.cases.*
 import com.diconium.mobile.tools.kebabkrafter.sample.cases.security.configureSecurity
 import com.diconium.mobile.tools.kebabkrafter.sample.cases.security.installSecurityGeneratedRoutes
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.installPetStoreGeneratedRoutes
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.installPetStoreGeneratedRoutes
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

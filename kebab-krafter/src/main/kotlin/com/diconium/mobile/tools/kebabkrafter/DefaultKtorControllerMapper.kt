@@ -1,4 +1,4 @@
-package com.diconium.mobile.tools.kebabkrafter.generator.ktorserver
+package com.diconium.mobile.tools.kebabkrafter
 
 import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
 import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
@@ -18,7 +18,7 @@ object DefaultKtorControllerMapper : KtorMapper {
             val pathPart = endpoint.path
                 .map { it.replace("{", "").replace("}", "") }
                 .joinToString("") { it.toPascalCase() }
-            "controllers" to "${method}$pathPart"
+            "" to "${method}$pathPart"
         }
 
         val kdoc = buildString {
@@ -44,7 +44,7 @@ object DefaultKtorControllerMapper : KtorMapper {
 
         return KtorController(
             ktorFunction = endpoint.method.function(),
-            route = endpoint.path.joinToString("/"),
+            path = endpoint.path,
             routeHeaders = endpoint.routeHeaders,
             authentication = endpoint.authentication,
             packageName = packageName.replace("-", "").replace("_", "").lowercase(),
@@ -57,7 +57,7 @@ object DefaultKtorControllerMapper : KtorMapper {
 }
 
 private fun List<String>.splitPath(method: String, count: Int): Pair<String, String> {
-    val packageName = "controllers.${take(count).joinToString(".").withoutBrackets}"
+    val packageName = take(count).joinToString(".").withoutBrackets
     val classNamePath = drop(count).joinToString("") { it.toPascalCase() }.withoutBrackets
     return packageName to "${method}$classNamePath"
 }

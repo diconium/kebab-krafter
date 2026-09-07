@@ -1,245 +1,175 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.ktorclient
 
-import java.io.File
+import com.diconium.mobile.tools.kebabkrafter.KebabLogger
+import com.diconium.mobile.tools.kebabkrafter.KtorController
+import com.diconium.mobile.tools.kebabkrafter.generator.*
+import com.diconium.mobile.tools.kebabkrafter.requiresSupportClass
+import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import io.ktor.client.*
 
-class KtorClientGenerator(
-    private val basePackageName: String,
-    private val name: String,
-    // private val swaggerSpec: SwaggerSpec,
-    private val outputDirectory: File,
+internal class KtorClientGenerator(
+    private val log: KebabLogger,
+    private val safeExecution: Boolean,
+    private val basePackage: String,
+) {
+
+    init {
+        log.d("Initing KtorClientGenerator for $basePackage")
+    }
+
+    fun generate(controller: KtorController): FileSpec {
+        val poet = PoetController(basePackage, controller)
+
+        val interfaceSpec = with(poet) {
+            TypeSpec
+                .funInterfaceBuilder(poet.controllerClassName)
+                .addFunction(
+                    FunSpec
+                        .builder("invoke")
+                        .addModifiers(KModifier.OPERATOR)
+                        .makeAbstractFunction()
+                        .applySafeReturn(responseType())
+                        .build(),
+                )
+                .build()
+        }
+
+        val supportClass = with(poet) {
+            TypeSpec.classBuilder(poet.supportClassName)
+                .makeSupportClass(true)
+                .build()
+                .takeIf { controller.response.requiresSupportClass }
+        }
+
+        return FileSpec.builder(poet.controllerClassName)
+            .indent()
+            .addFileComment(AUTO_GENERATOR_WARNING)
+            .addImport("io.ktor.client.request", controller.ktorFunction)
+            .addType(interfaceSpec)
+            .addProperty(buildExtensionProperty(poet, controller))
+            .apply { supportClass?.let { addType(it) } }
+            .build()
+    }
+
+    private fun buildExtensionProperty(poet: PoetController, controller: KtorController) = PropertySpec
+        .builder(controller.className.toCamelCase(), poet.controllerClassName)
+        .apply { controller.kdoc?.let(::addKdoc) }
+        .receiver(HttpClient::class)
+        .getter(buildExtensionFunction(poet, controller).toBuilder(name = "get()").build())
+        .build()
+
+    private fun FunSpec.Builder.applySafeReturn(returnType: ClassName?): FunSpec.Builder = apply {
+        if (safeExecution.not()) {
+            return@apply
+        }
+
+        val type = if (returnType == null) {
+            Result::class.parameterizedBy(Unit::class)
+        } else {
+            Result::class.asTypeName().parameterizedBy(returnType)
+        }
+
+        returns(type)
+    }
+
+    private fun CodeBlock.Builder.applyRunCatching(
+        safeExecution: Boolean,
+        block: CodeBlock.Builder.() -> Unit,
+    ): CodeBlock.Builder = apply {
+        if (safeExecution.not()) {
+            block()
+        } else {
+            controlFlow("runCatching", block)
+        }
+    }
+
+    private fun CodeBlock.Builder.controlFlow(
+        controlFlow: String,
+        block: CodeBlock.Builder.() -> Unit,
+    ): CodeBlock.Builder = apply {
+        beginControlFlow(controlFlow)
+        block()
+        endControlFlow()
+    }
+
+    private fun buildExtensionFunction(poet: PoetController, controller: KtorController): FunSpec {
+        val parameters = poet.parameters()
+        val types = buildList {
+            add(poet.controllerClassName)
+            addAll(parameters.map { it.type })
+        }.toTypedArray()
+
+        val lambdaArguments = parameters
+            .joinToString(separator = ", ", prefix = " ", postfix = " ->") { p ->
+                "${p.name}: %T"
+            }
+            .takeIf { parameters.isNotEmpty() } ?: ""
+
+        return FunSpec
+            .builder(controller.className.toCamelCase())
+            .receiver(HttpClient::class)
+            .addCode(
+                CodeBlock
+                    .builder()
+                    .beginControlFlow("return %T {$lambdaArguments", *types)
+                    .applyRunCatching(safeExecution) {
+                        controlFlow("val response = ${controller.ktorFunction}") {
+                            // headers
+                            controller.routeHeaders.forEach { (key, value) ->
+                                addStatement("%M(\"${key}\", \"${value}\")", fHeader)
+                            }
+                            // URL path + path parameters
+                            controlFlow("url") {
+                                controller.path.forEach { path ->
+                                    if (path.startsWith("{") && path.endsWith("}")) {
+                                        addStatement("%M(${path.trim('{', '}')})", fAppendEncodedPathSegments)
+                                    } else {
+                                        addStatement("%M(\"$path\")", fAppendPathSegments)
+                                    }
+                                }
+                            }
+                            // query parameters
+                            parameters
+                                .filter { it.usage == ParametersDef.Usage.Query }
+                                .forEach { p ->
+                                    addStatement("%M(\"${p.name}\", ${p.name})", fParameter)
+                                }
+                            // body
+                            if (poet.requestClassName != null) {
+                                addStatement("%M(%M)", fContentType, pJson)
+                                addStatement("%M(body)", fSetBody)
+                            }
+                        }
+                        if (controller.response.requiresSupportClass) {
+                            addStatement("%T(", poet.supportClassName)
+                            indent()
+                            addStatement("body = response.%M(),", fBody)
+                            controller.response.headers.forEach { (key, value) ->
+                                addStatement("$value = response.headers[\"$key\"],")
+                            }
+                            unindent()
+                            addStatement(")")
+                        } else {
+                            addStatement("response.%M()", fBody)
+                        }
+                    }
+                    .endControlFlow()
+                    .build(),
+            )
+            .build()
+    }
+}
+
+private val fAppendPathSegments = MemberName("io.ktor.http", "appendPathSegments")
+private val fAppendEncodedPathSegments = MemberName("io.ktor.http", "appendEncodedPathSegments")
+private val fParameter = MemberName("io.ktor.client.request", "parameter")
+private val fSetBody = MemberName("io.ktor.client.request", "setBody")
+private val fHeader = MemberName("io.ktor.client.request", "header")
+private val fBody = MemberName("io.ktor.client.call", "body")
+
+private val fContentType = MemberName("io.ktor.http", "contentType")
+private val pJson = MemberName(
+    enclosingClassName = ClassName.bestGuess("io.ktor.http.ContentType.Application"),
+    simpleName = "Json",
 )
-
-// {
-// 	private val dataModelGenerator = DataClassesGenerator(basePackageName, swaggerSpec.dataSpecs, outputDirectory)
-//
-// 	fun generate() {
-// 		dataModelGenerator.generateDataModelFiles()
-//
-// 		val clientServiceFileSpec = generateHttpClientService()
-// 		clientServiceFileSpec.writeTo(outputDirectory)
-// 	}
-//
-// 	private fun generateHttpClientService(): FileSpec {
-// 		val className = ClassName(basePackageName, name)
-//
-// 		return FileSpec.builder(className)
-// 			.addType(
-// 				// Class
-// 				TypeSpec.classBuilder(className).apply {
-// 					// Modifiers
-// 					modifiers.run {
-// 						add(KModifier.PUBLIC)
-// 					}
-//
-// 					// Constructor
-// 					primaryConstructor(
-// 						FunSpec.constructorBuilder()
-// 							.addParameter("client", HttpClient::class)
-// 							.build(),
-// 					)
-//
-// 					// Properties
-// 					addProperty(
-// 						PropertySpec.builder("client", HttpClient::class, KModifier.PRIVATE)
-// 							.initializer("client")
-// 							.build(),
-// 					)
-//
-// 					// Methods
-// 					swaggerSpec.endpoints.forEach { endpoint ->
-// 						addFunction(generateEndpointMethod(endpoint))
-// 					}
-// 				}.build(),
-// 			).build()
-// 	}
-//
-// 	private fun String.capitalize(): String {
-// 		return replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-// 	}
-//
-// 	private fun generateEndpointMethod(endpoint: Endpoint): FunSpec {
-// 		// Response
-// 		val responseSpec: BaseSpecModel = swaggerSpec.dataSpecs[endpoint.response.id]!!
-// 		val responseClassName = responseSpec.let { "${it.getFullPackageName(basePackageName)}.${it.name}" }
-//
-// 		val method = endpoint.method.value
-//
-// 		//  Function Name
-// 		val builder = FunSpec.builder(
-// 			// "${method.lowercase()}${endpoint.path.last { !it.startsWith("{") }.capitalize() }" // Alt Naming Scheme
-// 			endpoint.path.last { !it.startsWith("{") },
-// 		).apply {
-// 			// Return type
-// 			responseClassName?.let { returns(ClassName.bestGuess(responseClassName)) }
-//
-// 			// Function Modifiers
-// 			addModifiers(KModifier.SUSPEND)
-//
-// 			// Function Parameters
-// 			val params = endpoint.queryParameters + endpoint.pathParameters
-// 			params.forEach { (name, urlType) ->
-// 				addParameter(ParameterSpec(name, urlType.format.toTypeName()))
-// 			}
-// 			responseSpec?.let {
-// 				addParameter(ParameterSpec("requestBody", it.getClassName(basePackageName)))
-// 			}
-//
-// 			// Function Body
-// 			addCode(
-// 				CodeBlock.builder()
-// 					.apply {
-// 						// Request Builder Start
-// 						beginControlFlow("val response = client.%M", MemberName("io.ktor.client.request", "request"))
-//
-// 						// Set HTTP Method
-// 						addStatement("method = %M(\"$method\")", MemberName("io.ktor.http", "HttpMethod"))
-//
-// 						// Url Builder Start
-// 						beginControlFlow("url")
-//
-// 						// Path Segments
-// 						addStatement(
-// 							"%M(${endpoint.generatePathSegmentsArgs()})\n",
-// 							MemberName("io.ktor.http", "appendPathSegments"),
-// 						)
-//
-// 						// Query Parameters
-// 						endpoint.queryParameters.forEach { (name, _) ->
-// 							addStatement("parameters.append(\"$name\", $name.toString())")
-// 						}
-//
-// 						// Url Builder End
-// 						endControlFlow()
-//
-// 						// Set Request Body
-// 						responseSpec?.let {
-// 							addStatement("%M(requestBody)", MemberName("io.ktor.client.request", "setBody"))
-// 						}
-//
-// 						// Request Builder End
-// 						endControlFlow()
-//
-// 						// Return Statement
-// 						responseClassName?.let {
-// 							addStatement("return response.%M()", MemberName("io.ktor.client.call", "body"))
-// 						}
-// 					}
-// 					.build(),
-// 			)
-// 		}
-//
-// 		return builder.build()
-// 	}
-//
-// 	private fun Endpoint.generatePathSegmentsArgs(): String {
-// 		return path.joinToString(", ") {
-// 			if (it.startsWith("{") && it.endsWith("}")) { // Path parameter. Use parameter name
-// 				"${it.substring(1, it.length - 1)}.toString()"
-// 			} else { // Regular URL segment
-// 				"\"$it\""
-// 			}
-// 		}
-// 	}
-//
-// 	/**
-// 	 * Convert [UrlType.Format] to corresponding [TypeName].
-// 	 */
-// 	private fun UrlType.Format.toTypeName(): TypeName = when (this) {
-// 		UrlType.Format.Boolean -> Boolean::class.asTypeName()
-// 		UrlType.Format.Float -> Float::class.asTypeName()
-// 		UrlType.Format.Int -> Int::class.asTypeName()
-// 		UrlType.Format.String -> String::class.asTypeName()
-// 		UrlType.Format.StringArray -> List::class.asTypeName().parameterizedBy(String::class.asTypeName())
-// 	}
-// }
-//
-// fun main() {
-// 	val models = listOf(
-// 		SpecModel(
-// 			"1",
-// 			"",
-// 			"models",
-// 			"Model1",
-// 			listOf(SpecField("id", SpecField.Type.Int, true, ""), SpecField("name", SpecField.Type.String, false, "")),
-// 		),
-// 		SpecModel(
-// 			"2",
-// 			"",
-// 			"api.models",
-// 			"Model2",
-// 			listOf(
-// 				SpecField("price", SpecField.Type.Float, true, ""),
-// 				SpecField("isExpired", SpecField.Type.Boolean, true, ""),
-// 			),
-// 		),
-// 		SpecModel(
-// 			"3",
-// 			"",
-// 			"api.models",
-// 			"Model3",
-// 			listOf(
-// 				SpecField("id", SpecField.Type.Int, true, ""),
-// 				SpecField("model", SpecField.Type.DataModel("1"), false, ""),
-// 			),
-// 		),
-// 		SpecModel(
-// 			"4",
-// 			"",
-// 			"models",
-// 			"Model4",
-// 			listOf(
-// 				SpecField("ids", SpecField.Type.DataArray(SpecField.Type.Int), false, ""),
-// 				SpecField(
-// 					"models",
-// 					SpecField.Type.DataArray(SpecField.Type.DataModel("3")),
-// 					false,
-// 					"",
-// 				),
-// 			),
-// 		),
-// 	)
-//
-// 	val endpoints = listOf(
-// 		Endpoint(
-// 			listOf("more", "{param1}", "path1", "{param2}"),
-// 			"",
-// 			HttpMethod.Get,
-// 			Response(models[0].id, HttpStatusCode.OK, ResponseType.Json, "application/json", emptyList()),
-// 			pathParameters = mapOf(
-// 				"param1" to UrlType(true, UrlType.Format.String),
-// 				"param2" to UrlType(true, UrlType.Format.Int),
-// 			),
-// 			bodyId = models[2].id,
-// 		),
-// 		Endpoint(
-// 			listOf("more", "path2"),
-// 			"",
-// 			HttpMethod.Post,
-// 			Response(models[1].id, HttpStatusCode.OK, ResponseType.Json, "application/json", emptyList()),
-// 			mapOf(
-// 				"param1" to UrlType(true, UrlType.Format.String),
-// 				"param2" to UrlType(true, UrlType.Format.Boolean),
-// 				"param3" to UrlType(false, UrlType.Format.Int),
-// 			),
-// 			bodyId = models[3].id,
-// 		),
-// 	)
-// 	val swaggerSpec = SwaggerSpec("", endpoints, models.associateBy { it.id })
-// 	val outputDirectory = File("./src/gen/kotlin/").apply {
-// 		deleteRecursively()
-// 		mkdirs()
-// 	}
-// 	val generator = KtorClientGenerator("com.example", "SampleClient", swaggerSpec, outputDirectory)
-// 	generator.generate()
-// }
-//
-// fun listToMap(models: List<SpecModel>): Map<String, SpecModel> {
-// 	val modelMap = mutableMapOf<String, SpecModel>()
-//
-// 	for (model in models) {
-// 		val key = "${model.ref}/${model.name}"
-// 		modelMap[key] = model
-// 	}
-//
-// 	return modelMap
-// }

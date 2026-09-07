@@ -1,13 +1,13 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases
 
+import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.ServiceLocator
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.controllers.GetEdgeCaseMaps
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.installCaseMapsGeneratedRoutes
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.models.MapResponse
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.models.MapResponse.TypeOfMap
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.models.color.Color
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps.models.color.ColorType
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps.controllers.GetEdgeCaseMaps
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps.installCaseMapsGeneratedRoutes
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps.models.MapResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps.models.MapResponse.TypeOfMap
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps.models.color.Color
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps.models.color.ColorType
 import io.ktor.server.routing.*
 import kotlin.reflect.KClass
 

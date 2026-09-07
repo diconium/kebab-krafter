@@ -1,8 +1,4 @@
-import com.diconium.mobile.tools.kebabkrafter.KebabKrafterUnstableApi
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.DefaultKtorControllerMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorController
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorMapper
-import com.diconium.mobile.tools.kebabkrafter.generator.ktorserver.KtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.*
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -39,7 +35,8 @@ licensee {
 }
 
 dependencies {
-    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.ktor.server)
+    implementation(libs.bundles.ktor.client)
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.datetime)
     implementation(libs.koin)
@@ -76,9 +73,9 @@ private val ktorTransformer = KtorTransformer { endpoint, ctrl ->
     val version = endpoint.path.firstOrNull().takeIf { it?.matches("v[0-9]+".toRegex()) == true }?.substring(1)?.toInt()
 
     if (version != null) {
-        println("transforming: ${ctrl.ktorFunction} ${ctrl.route}")
+        println("transforming: ${ctrl.ktorFunction} ${ctrl.path.joinToString("/")}")
         ctrl.copy(
-            route = ctrl.route.split("/").let { it.subList(1, it.size) }.joinToString("/"),
+            path = ctrl.path.let { it.subList(1, it.size) },
             routeHeaders = listOf("X-Api-Version" to "v$version"),
         )
     } else {
@@ -97,7 +94,7 @@ val customKtorMapper = KtorMapper { shortestPath: Int, endpoint: Endpoint, dataS
         ctrl.copy(
 
             // remove the version from the route
-            route = ctrl.route.split("/").let { it.subList(1, it.size) }.joinToString("/"),
+            path = ctrl.path.let { it.subList(1, it.size) },
 
             // add version to header
             routeHeaders = listOf("X-Api-Version" to version.trimStart('v')),
@@ -116,7 +113,7 @@ ktorServer {
 
     // The PetStore example
     create("petStore") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore"
         specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
         schemasFolder = File(rootDir, "src/main/resources/petstore/models")
 
@@ -128,19 +125,11 @@ ktorServer {
             className = "CallScope"
             factoryName = "from"
         }
-
-        // The transformers allow to manipulate the parsed data before code generation
-        // with great power comes great responsibility, use it with care
-
-//        @OptIn(KebabKrafterUnstableApi::class)
-//        transformers {
-//            ktorMapper(customKtorMapper)
-//        }
     }
 
     //region development/testing of edge cases and complex data structures
     create("caseMaps") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.maps"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.maps"
         specFile = File(rootDir, "testCases/maps/swagger.yml")
         schemasFolder = File(rootDir, "testCases/maps/models/")
         contextSpec {
@@ -150,7 +139,7 @@ ktorServer {
         }
     }
     create("caseAcronym") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.acronym"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.acronym"
         specFile = File(rootDir, "testCases/acronym/swagger.yml")
         schemasFolder = File(rootDir, "testCases/acronym/models/")
         contextSpec {
@@ -160,7 +149,7 @@ ktorServer {
         }
     }
     create("caseInlined") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.inlined"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined"
         specFile = File(rootDir, "testCases/inlined/swagger.yml")
         schemasFolder = File(rootDir, "testCases/inlined/models/")
         contextSpec {
@@ -170,7 +159,7 @@ ktorServer {
         }
     }
     create("caseDescriptions") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.descriptions"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.descriptions"
         specFile = File(rootDir, "testCases/descriptions/swagger.yml")
         schemasFolder = File(rootDir, "testCases/descriptions/models/")
         contextSpec {
@@ -180,7 +169,7 @@ ktorServer {
         }
     }
     create("security") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.security"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security"
         specFile = File(rootDir, "testCases/security/swagger.yml")
         schemasFolder = File(rootDir, "testCases/security/models/")
         contextSpec {
@@ -200,7 +189,7 @@ ktorServer {
         }
     }
     create("headersRoute") {
-        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.case.headersRoute"
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.headersRoute"
         specFile = File(rootDir, "testCases/headersRoute/swagger.yml")
         schemasFolder = File(rootDir, "testCases/headersRoute/models/")
         contextSpec {
@@ -208,16 +197,137 @@ ktorServer {
             className = "CallScope"
             factoryName = "from"
         }
+
+        // The transformers allow to manipulate the parsed data before code generation
+        // with great power comes great responsibility, use it with care
         @OptIn(KebabKrafterUnstableApi::class)
         transformers {
-            ktorTransformer { endpoint, controller ->
-                val first = endpoint.path.getOrNull(0)
-                if (first?.startsWith("v") == true) {
-                    controller.copy(
-                        routeHeaders = listOf("X-Api-Verion" to first),
+
+            ktorTransformer { endpoint, ctrl ->
+
+                // find if this endpoint starts with a version number
+                val version = endpoint.path
+                    .firstOrNull()
+                    .takeIf { it?.matches("v[0-9]+".toRegex()) == true }
+                    ?.substring(1)
+                    ?.toInt()
+
+                if (version != null) {
+                    // move the version information to the header
+                    ctrl.copy(
+
+                        // remove the version from the route
+                        path = endpoint.path.drop(1),
+
+                        // add version to header
+                        routeHeaders = listOf("X-Api-Version" to version.toString()),
+
+                        kdoc = ctrl.kdoc
+                            ?.split("\n")
+                            ?.joinToString(separator = "\n") {
+                                val remove = "v$version/"
+                                if (it.contains(remove)) {
+                                    "X-Api-Version: $version\n${it.replace(remove, "")}"
+                                } else {
+                                    it
+                                }
+                            },
                     )
                 } else {
-                    controller
+                    // redirect non-api controllers (a.k.a /cloud)
+                    ctrl.copy(
+                        packageName = ctrl.packageName.replace("controllers", "controllers.cloud"),
+                    )
+                }
+            }
+        }
+    }
+    //endregion
+}
+
+ktorClient {
+    // The PetStore example
+    create("petStore") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.petstore"
+        specFile = File(rootDir, "src/main/resources/petstore/swagger.yml")
+        schemasFolder = File(rootDir, "src/main/resources/petstore/models")
+    }
+
+    //region development/testing of edge cases and complex data structures
+    create("caseMaps") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.maps"
+        specFile = File(rootDir, "testCases/maps/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/maps/models/")
+    }
+    create("caseAcronym") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.acronym"
+        specFile = File(rootDir, "testCases/acronym/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/acronym/models/")
+    }
+    create("caseInlined") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.inlined"
+        specFile = File(rootDir, "testCases/inlined/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/inlined/models/")
+    }
+    create("caseDescriptions") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.descriptions"
+        specFile = File(rootDir, "testCases/descriptions/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/descriptions/models/")
+    }
+    create("security") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.security"
+        specFile = File(rootDir, "testCases/security/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/security/models/")
+    }
+    create("caseInlineInSealedClass") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.inlinesealedclass"
+        specFile = File(rootDir, "testCases/caseInlineInSealedClass/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/caseInlineInSealedClass/models/")
+    }
+    create("headersRoute") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.headersRoute"
+        specFile = File(rootDir, "testCases/headersRoute/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/headersRoute/models/")
+
+        // The transformers allow to manipulate the parsed data before code generation
+        // with great power comes great responsibility, use it with care
+        @OptIn(KebabKrafterUnstableApi::class)
+        transformers {
+            ktorTransformer { endpoint, ctrl ->
+
+                // find if this endpoint starts with a version number
+                val version = endpoint.path
+                    .firstOrNull()
+                    .takeIf { it?.matches("v[0-9]+".toRegex()) == true }
+                    ?.substring(1)
+                    ?.toInt()
+
+                if (version != null) {
+                    // move the version information to the header
+                    ctrl.copy(
+
+                        // remove the version from the route
+                        path = endpoint.path.drop(1),
+
+                        // add version to header
+                        routeHeaders = listOf("X-Api-Version" to version.toString()),
+
+                        kdoc = ctrl.kdoc
+                            ?.split("\n")
+                            ?.joinToString(separator = "\n") {
+                                val remove = "v$version/"
+                                if (it.contains(remove)) {
+                                    "X-Api-Version: $version\n${it.replace(remove, "")}"
+                                } else {
+                                    it
+                                }
+                            },
+                    )
+                } else {
+                    // redirect non-api controllers (a.k.a /cloud)
+                    ctrl.copy(
+                        packageName = ctrl.packageName.replace("controllers", "controllers.cloud"),
+                    )
                 }
             }
         }

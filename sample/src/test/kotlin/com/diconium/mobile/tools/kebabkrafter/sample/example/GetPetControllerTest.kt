@@ -1,14 +1,16 @@
-package com.diconium.mobile.tools.kebabkrafter.sample.controllers
+package com.diconium.mobile.tools.kebabkrafter.sample.example
 
-import com.diconium.mobile.tools.kebabkrafter.sample.FakeCallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.GetPetController
-import com.diconium.mobile.tools.kebabkrafter.sample.gen.petstore.models.v1.PetsResponse
+import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.models.v1.PetsResponse
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * That is an example unit test for a controller generated with Kebab-Krafter
+ */
 class GetPetControllerTest {
 
     @Test
