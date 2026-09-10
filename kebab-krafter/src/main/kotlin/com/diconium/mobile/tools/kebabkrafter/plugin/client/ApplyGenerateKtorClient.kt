@@ -5,6 +5,7 @@ import com.diconium.mobile.tools.kebabkrafter.generator.toCamelCase
 import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
 import com.diconium.mobile.tools.kebabkrafter.plugin.DefaultEndpointTransformer
 import com.diconium.mobile.tools.kebabkrafter.plugin.DefaultKtorTransformer
+import com.diconium.mobile.tools.kebabkrafter.plugin.registerAndroid
 import com.diconium.mobile.tools.kebabkrafter.plugin.registerTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -16,8 +17,10 @@ fun applyGenerateKtorClient(target: Project) {
     // apply defaults
     ktorClient.log.convention(false)
 
-    val baseTask = target.tasks.register("generateKtorClient", DefaultTask::class.java) {
-        it.group = "generator"
+    val baseTask by lazy {
+        target.tasks.register("generateKtorClient", DefaultTask::class.java) {
+            it.group = "generator"
+        }
     }
 
     ktorClient.services.whenObjectAdded { ktorClientInput ->
@@ -32,13 +35,19 @@ fun applyGenerateKtorClient(target: Project) {
         // register task(s)
         val taskName = "generate${ktorClientInput.name.toPascalCase()}KtorClient"
         val task = target.tasks.register(taskName, GenerateKtorClientTask::class.java) {
-            // it.group = "generator"
-            it.ktorClientInput.set(ktorClientInput)
             it.log.set(ktorClient.log)
+            it.clientName.set(ktorClientInput.name)
+            it.packageName.set(ktorClientInput.packageName)
+            it.specFile.set(ktorClientInput.specFile)
+            it.outputFolder.set(ktorClientInput.outputFolder)
+            it.transformerSpec.endpointTransformer.set(ktorClientInput.transformerSpec.endpointTransformer)
+            it.transformerSpec.ktorMapper.set(ktorClientInput.transformerSpec.ktorMapper)
+            it.transformerSpec.ktorTransformer.set(ktorClientInput.transformerSpec.ktorTransformer)
         }
         baseTask.configure { it.dependsOn(task) }
 
         // wire task output to the main source set
         target.registerTask(task)
+        target.registerAndroid(task)
     }
 }

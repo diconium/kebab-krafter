@@ -16,8 +16,10 @@ fun applyGenerateKtorServer(target: Project) {
     // apply defaults
     ktorServer.log.convention(false)
 
-    val baseTask = target.tasks.register("generateKtorServer", DefaultTask::class.java) {
-        it.group = "generator"
+    val baseTask by lazy {
+        target.tasks.register("generateKtorServer", DefaultTask::class.java) {
+            it.group = "generator"
+        }
     }
 
     val serviceLocatorTask = target.tasks.register(

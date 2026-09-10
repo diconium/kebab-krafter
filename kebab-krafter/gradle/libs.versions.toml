@@ -55,6 +55,7 @@ gradle_plugin_version = "2.1.1"
 licensee_version = "1.14.1"
 ktlint_version = "14.2.0"
 jUnit5 = "5.14.2"
+agp_version = "9.4.0"
 
 [libraries]
 
@@ -92,3 +93,6 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 
 kotlin-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin_version" }
+
+# Specific for Android clients
+android-gradle-plugin = { module = "com.android.tools.build:gradle-api", version.ref = "agp_version" }

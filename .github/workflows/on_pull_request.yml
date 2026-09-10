@@ -39,3 +39,9 @@ jobs:
         env:
           KEBAB_VERSION: 0.0.1-SNAPSHOT
         run: ./gradlew check
+
+      - name: Build - Android
+        working-directory: android
+        env:
+          KEBAB_VERSION: 0.0.1-SNAPSHOT
+        run: ./gradlew assembleDebug

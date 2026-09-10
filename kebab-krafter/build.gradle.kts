@@ -20,6 +20,7 @@ version = if (isCiEnvironment) {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
@@ -31,6 +32,9 @@ dependencies {
     implementation(libs.data.json)
     implementation(libs.data.yaml)
     implementation(libs.swagger.parser)
+
+    // use `compileOnly` or else a server would need to add `google()` repository
+    compileOnly(libs.android.gradle.plugin)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)

@@ -5,7 +5,13 @@ import com.diconium.mobile.tools.kebabkrafter.plugin.TransformerSpec
 import org.gradle.api.Action
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Nested
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import java.io.File
 
 abstract class KtorClientServiceExtension(@get:Input val name: String) {
@@ -37,7 +43,6 @@ abstract class KtorClientServiceExtension(@get:Input val name: String) {
      * Output folder for the generated files
      * defaults to: build/generated/sources/ktorServer/
      */
-    @get:OutputDirectory
     @get:Optional
     abstract val outputFolder: DirectoryProperty
     //endregion
