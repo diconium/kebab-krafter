@@ -1,0 +1,58 @@
+openapi: '3.0.3'
+
+info:
+  title: Headers routing
+  version: '1.0.0'
+
+paths:
+  /v1/some/path/with/support/class/header/:
+    get:
+      responses:
+        '204':
+          description: Success. Empty body with header.
+          headers:
+            X-Random:
+              schema:
+                type: string
+
+  /v1/some/path/with/support/class/header/body/:
+    get:
+      responses:
+        '200':
+          description: Successful operation
+          headers:
+            X-Random:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: './models/NotImportant.json'
+
+  /v1/some/path/with/support/class/header/bytes/:
+    get:
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                pattern: '^attachment; filename="[\w-]+\.pdf"'
+                example: 'attachment; filename="Home_Charging_Export_2021-09-01_2021-09-30.pdf"'
+
+  /v1/some/path/with/bytes/:
+    get:
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary

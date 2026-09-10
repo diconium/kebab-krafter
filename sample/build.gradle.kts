@@ -148,6 +148,16 @@ ktorServer {
             factoryName = "from"
         }
     }
+    create("caseSupportClass") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.supportclass"
+        specFile = File(rootDir, "testCases/caseSupportClass/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/caseSupportClass/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
     create("caseInlined") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlined"
         specFile = File(rootDir, "testCases/inlined/swagger.yml")
@@ -273,6 +283,11 @@ ktorClient {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.acronym"
         specFile = File(rootDir, "testCases/acronym/swagger.yml")
         schemasFolder = File(rootDir, "testCases/acronym/models/")
+    }
+    create("caseSupportClass") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.supportclass"
+        specFile = File(rootDir, "testCases/caseSupportClass/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/caseSupportClass/models/")
     }
     create("caseInlined") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.inlined"

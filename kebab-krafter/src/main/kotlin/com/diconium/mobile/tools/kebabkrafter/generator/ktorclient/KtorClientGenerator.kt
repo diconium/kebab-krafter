@@ -3,6 +3,7 @@ package com.diconium.mobile.tools.kebabkrafter.generator.ktorclient
 import com.diconium.mobile.tools.kebabkrafter.KebabLogger
 import com.diconium.mobile.tools.kebabkrafter.KtorController
 import com.diconium.mobile.tools.kebabkrafter.generator.*
+import com.diconium.mobile.tools.kebabkrafter.models.ResponseType
 import com.diconium.mobile.tools.kebabkrafter.requiresSupportClass
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -147,7 +148,9 @@ internal class KtorClientGenerator(
                         if (controller.response.requiresSupportClass) {
                             addStatement("%T(", poet.supportClassName)
                             indent()
-                            addStatement("body = response.%M(),", fBody)
+                            if (poet.responseClassName != null || controller.response.type == ResponseType.Binary) {
+                                addStatement("body = response.%M(),", fBody)
+                            }
                             controller.response.headers.forEach { (key, value) ->
                                 addStatement("$value = response.headers[\"$key\"],")
                             }
