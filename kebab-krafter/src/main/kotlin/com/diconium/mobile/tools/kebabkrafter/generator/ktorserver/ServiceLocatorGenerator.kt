@@ -34,7 +34,7 @@ object ServiceLocatorGenerator {
             .build()
     }
 
-    private const val PACKAGE = "com.budius.kebabkrafter"
+    private const val PACKAGE = "io.github.budius.kebabkrafter"
 
     val serviceLocatorClass = ClassName(PACKAGE, "ServiceLocator")
 }

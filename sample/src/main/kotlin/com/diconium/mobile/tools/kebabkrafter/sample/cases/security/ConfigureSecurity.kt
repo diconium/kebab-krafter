@@ -1,9 +1,9 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases.security
 
-import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.controllers.GetData
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.controllers.PostLogin
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.security.installSecurityGeneratedRoutes
+import io.github.budius.kebabkrafter.ServiceLocator
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*

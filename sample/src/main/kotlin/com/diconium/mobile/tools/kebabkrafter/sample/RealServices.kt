@@ -1,9 +1,9 @@
 package com.diconium.mobile.tools.kebabkrafter.sample
 
-import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.controllers.v1.*
 import com.diconium.mobile.tools.kebabkrafter.sample.db.Database
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.petstore.controllers.v1.*
+import io.github.budius.kebabkrafter.ServiceLocator
 import io.ktor.server.routing.*
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module

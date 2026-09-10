@@ -1,10 +1,10 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases
 
-import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.descriptions.controllers.PostEdgeCaseDescription
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.descriptions.installCaseDescriptionsGeneratedRoutes
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.descriptions.models.DescriptionResponse
+import io.github.budius.kebabkrafter.ServiceLocator
 import io.ktor.server.routing.*
 import kotlin.reflect.KClass
 

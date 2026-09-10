@@ -1,6 +1,6 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.integration
 
-import com.budius.kebabkrafter.ServiceLocator
+import io.github.budius.kebabkrafter.ServiceLocator
 import io.ktor.client.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*

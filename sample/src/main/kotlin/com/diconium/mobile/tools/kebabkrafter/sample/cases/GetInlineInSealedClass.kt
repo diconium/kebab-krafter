@@ -1,12 +1,12 @@
 package com.diconium.mobile.tools.kebabkrafter.sample.cases
 
-import com.budius.kebabkrafter.ServiceLocator
 import com.diconium.mobile.tools.kebabkrafter.sample.CallScope
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.controllers.enuminside.GetSealedClass
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.installCaseInlineInSealedClassGeneratedRoutes
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.models.InlineInSealedClassResponse
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.models.InlineInSealedClassResponse.DefExtra.Recursive
 import com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.inlinesealedclass.models.InlineInSealedClassResponse.Option1.Type1
+import io.github.budius.kebabkrafter.ServiceLocator
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import kotlin.random.Random
