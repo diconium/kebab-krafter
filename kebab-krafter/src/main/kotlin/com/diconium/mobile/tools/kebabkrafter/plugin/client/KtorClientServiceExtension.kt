@@ -54,6 +54,16 @@ abstract class KtorClientServiceExtension(@get:Input val name: String) {
     abstract val transformerSpec: TransformerSpec
 
     /**
+     * Defines whether generated data classes will apply `@kotlinx.parcelize.Parcelize` annotation
+     * and implements `android.os.Parcelable` interface.
+     *
+     * This configuration only takes effect in Android projects. Defaults to true.
+     */
+    @get:Input
+    @get:Optional
+    abstract val parcelable: Property<Boolean>
+
+    /**
      * Specification for the custom transformations for the API
      */
     @KebabKrafterUnstableApi

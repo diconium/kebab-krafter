@@ -10,6 +10,7 @@ import com.diconium.mobile.tools.kebabkrafter.plugin.client.GenerateKtorClientTa
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
@@ -42,12 +43,13 @@ internal fun Project.registerTask(task: Any) {
     }
 }
 
-internal fun Project.registerAndroid(task: TaskProvider<GenerateKtorClientTask>) {
+internal fun Project.registerAndroid(task: TaskProvider<GenerateKtorClientTask>, parcelable: Property<Boolean>) {
     fun SourceDirectories.Flat.registerVariant() {
         this.addGeneratedSourceDirectory(task, GenerateKtorClientTask::outputFolder)
     }
 
     fun register() {
+        task.configure { it.parcelable.set(parcelable) }
         extensions.getByType(AndroidComponentsExtension::class.java).onVariants { variant ->
             variant.sources.java?.registerVariant()
             variant.sources.kotlin?.registerVariant()

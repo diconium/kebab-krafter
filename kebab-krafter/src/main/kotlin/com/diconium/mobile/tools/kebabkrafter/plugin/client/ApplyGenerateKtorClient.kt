@@ -28,6 +28,7 @@ fun applyGenerateKtorClient(target: Project) {
         val folderName = ktorClientInput.name.toCamelCase()
         val output = target.layout.buildDirectory.dir("generated/sources/ktorClient/$folderName/")
         ktorClientInput.outputFolder.convention(output)
+        ktorClientInput.parcelable.convention(true)
         ktorClientInput.transformerSpec.endpointTransformer.convention(DefaultEndpointTransformer::class.java)
         ktorClientInput.transformerSpec.ktorMapper.convention(DefaultKtorControllerMapper::class.java)
         ktorClientInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
@@ -40,6 +41,7 @@ fun applyGenerateKtorClient(target: Project) {
             it.packageName.set(ktorClientInput.packageName)
             it.specFile.set(ktorClientInput.specFile)
             it.outputFolder.set(ktorClientInput.outputFolder)
+            it.parcelable.set(false)
             it.transformerSpec.endpointTransformer.set(ktorClientInput.transformerSpec.endpointTransformer)
             it.transformerSpec.ktorMapper.set(ktorClientInput.transformerSpec.ktorMapper)
             it.transformerSpec.ktorTransformer.set(ktorClientInput.transformerSpec.ktorTransformer)
@@ -48,6 +50,6 @@ fun applyGenerateKtorClient(target: Project) {
 
         // wire task output to the main source set
         target.registerTask(task)
-        target.registerAndroid(task)
+        target.registerAndroid(task, ktorClientInput.parcelable)
     }
 }

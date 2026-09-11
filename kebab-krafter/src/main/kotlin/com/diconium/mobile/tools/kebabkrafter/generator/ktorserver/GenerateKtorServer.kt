@@ -27,6 +27,7 @@ internal fun generateKtorServerFor(
     log.l("Generating data class models for KtorServer")
     DataClassesGenerator(
         log = log,
+        parcelable = false,
         outputDirectory = baseDir,
         basePackageName = packageName,
         dataSpecsMap = dataSpecs,

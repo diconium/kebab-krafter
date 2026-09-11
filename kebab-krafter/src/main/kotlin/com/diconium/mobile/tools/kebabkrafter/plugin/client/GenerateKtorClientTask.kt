@@ -40,12 +40,16 @@ abstract class GenerateKtorClientTask : DefaultTask() {
     @get:Nested
     abstract val transformerSpec: TransformerSpec
 
+    @get:Input
+    abstract val parcelable: Property<Boolean>
+
     @TaskAction
     fun action() {
         generateKtorClientFor(
             name = clientName.get(),
             log = logger.named(clientName.get()),
             packageName = packageName.get(),
+            parcelable = parcelable.get(),
             baseDir = outputFolder.get().asFile,
             specFile = specFile.get(),
             transformers = transformerSpec.buildTransformers(),

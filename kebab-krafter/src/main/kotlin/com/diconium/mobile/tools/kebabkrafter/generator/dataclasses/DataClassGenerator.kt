@@ -1,11 +1,36 @@
 package com.diconium.mobile.tools.kebabkrafter.generator.dataclasses
 
 import com.diconium.mobile.tools.kebabkrafter.KebabLogger
-import com.diconium.mobile.tools.kebabkrafter.generator.*
-import com.diconium.mobile.tools.kebabkrafter.models.*
+import com.diconium.mobile.tools.kebabkrafter.generator.AUTO_GENERATOR_WARNING
+import com.diconium.mobile.tools.kebabkrafter.generator.indent
+import com.diconium.mobile.tools.kebabkrafter.generator.ktorclient.instantParceler
+import com.diconium.mobile.tools.kebabkrafter.generator.markFieldDeprecated
+import com.diconium.mobile.tools.kebabkrafter.generator.toCamelCase
+import com.diconium.mobile.tools.kebabkrafter.generator.toPascalCase
+import com.diconium.mobile.tools.kebabkrafter.generator.toScreamingSnakeCase
+import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonSpec
+import com.diconium.mobile.tools.kebabkrafter.models.BaseJsonType
+import com.diconium.mobile.tools.kebabkrafter.models.ConcreteJsonType
+import com.diconium.mobile.tools.kebabkrafter.models.DefJsonSpec
+import com.diconium.mobile.tools.kebabkrafter.models.EnumJsonType
+import com.diconium.mobile.tools.kebabkrafter.models.JsonSpecFile
+import com.diconium.mobile.tools.kebabkrafter.models.PrimitiveJsonSpec
 import com.diconium.mobile.tools.kebabkrafter.models.PrimitiveJsonSpec.Primitive
-import com.squareup.kotlinpoet.*
+import com.diconium.mobile.tools.kebabkrafter.models.RefJsonSpec
+import com.diconium.mobile.tools.kebabkrafter.models.RootJsonType
+import com.diconium.mobile.tools.kebabkrafter.models.SealedJsonType
+import com.diconium.mobile.tools.kebabkrafter.models.smartToString
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,6 +42,7 @@ import kotlin.time.ExperimentalTime
 
 internal class DataClassGenerator(
     private val log: KebabLogger,
+    private val parcelable: Boolean,
     private val outputDirectory: File,
     private val basePackageName: String,
     private val path: String,
@@ -74,6 +100,8 @@ internal class DataClassGenerator(
             .classBuilder(ClassName(packageName, modelName))
             .apply { model.description?.let(::addKdoc) }
             .addAnnotation(Serializable::class)
+            .addParcelizeAnnotation(parcelable)
+            .addParcelableInterface(parcelable)
             .dataClass()
             .primaryConstructor(
                 FunSpec.constructorBuilder().apply {
@@ -98,6 +126,7 @@ internal class DataClassGenerator(
                         .apply {
                             if (field.type is PrimitiveJsonSpec && field.type.primitive is Primitive.DateSpec) {
                                 addAnnotation(optInExperimentalTime)
+                                instantParceler(parcelable, field.isRequired, outputDirectory, basePackageName)
                             }
                             field.description?.let(::addKdoc)
                         }
@@ -127,6 +156,7 @@ internal class DataClassGenerator(
             .classBuilder(sealedClass)
             .apply { model.description?.let(::addKdoc) }
             .addAnnotation(Serializable::class)
+            .addParcelableInterface(parcelable)
             .addModifiers(KModifier.SEALED)
             .addTypes(
                 model.types.map { (discriminator, type) ->
@@ -260,3 +290,15 @@ private fun serialNameAnnotation(name: String) = AnnotationSpec
     .builder(SerialName::class)
     .addMember("\"${name}\"")
     .build()
+
+private fun TypeSpec.Builder.addParcelizeAnnotation(parcelize: Boolean): TypeSpec.Builder = if (parcelize) {
+    this.addAnnotation(ClassName("kotlinx.parcelize", "Parcelize"))
+} else {
+    this
+}
+
+private fun TypeSpec.Builder.addParcelableInterface(parcelable: Boolean): TypeSpec.Builder = if (parcelable) {
+    this.addSuperinterface(ClassName("android.os", "Parcelable"))
+} else {
+    this
+}

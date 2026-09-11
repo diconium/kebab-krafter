@@ -1,6 +1,7 @@
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.serialization)
+	alias(libs.plugins.kotlin.parcelize)
 	alias(libs.plugins.ktlint)
 
 	id("io.github.budius.kebab-krafter") version "1.0-SNAPSHOT"
@@ -50,13 +51,13 @@ dependencies {
 	implementation(libs.androidx.appcompat)
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.material)
-	testImplementation(libs.junit)
-	androidTestImplementation(libs.androidx.espresso.core)
-	androidTestImplementation(libs.androidx.junit)
 
 	implementation(libs.bundles.ktor.client)
 	implementation(libs.kotlinx.serialization)
 	implementation(project(":kraftKebabAndroidLibary"))
+
+	testImplementation(libs.junit)
+	testImplementation(libs.kotlin.reflect)
 }
 
 ktorClient {

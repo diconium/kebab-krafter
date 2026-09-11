@@ -43,8 +43,11 @@ ktor-client-encoding = { group = "io.ktor", name = "ktor-client-encoding", versi
 ktor-client-content = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor_version" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin_serialization_version" }
 
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin_version" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin_version" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin_version" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint_version" }
 android-library = { id = "com.android.library", version.ref = "agp" }

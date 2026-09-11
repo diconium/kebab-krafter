@@ -6,12 +6,20 @@ import java.io.File
 
 internal class DataClassesGenerator(
     private val log: KebabLogger,
+    private val parcelable: Boolean,
     private val outputDirectory: File,
     private val basePackageName: String,
     private val dataSpecsMap: Map<String, JsonSpecFile>,
 ) {
 
     fun generate() = dataSpecsMap.forEach { (path, spec) ->
-        DataClassGenerator(log, outputDirectory, basePackageName, path, spec).generate()
+        DataClassGenerator(
+            log = log,
+            parcelable = parcelable,
+            outputDirectory = outputDirectory,
+            basePackageName = basePackageName,
+            path = path,
+            root = spec,
+        ).generate()
     }
 }
