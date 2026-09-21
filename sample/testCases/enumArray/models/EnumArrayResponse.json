@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "description": "Object holding arrays whose items are enums",
+  "type": "object",
+  "required": [
+    "sizes",
+    "sizesByGroup"
+  ],
+  "properties": {
+    "sizes": {
+      "description": "An array of enums defined in place",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "small",
+          "medium",
+          "large"
+        ]
+      }
+    },
+    "sizesByGroup": {
+      "description": "A map whose values are arrays of in place enums",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "S",
+            "M",
+            "L"
+          ]
+        }
+      }
+    },
+    "optionalSizes": {
+      "description": "An optional array of enums defined in place",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "xs",
+          "xl"
+        ]
+      }
+    }
+  }
+}

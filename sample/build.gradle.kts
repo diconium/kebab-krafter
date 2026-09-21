@@ -138,6 +138,16 @@ ktorServer {
             factoryName = "from"
         }
     }
+    create("caseEnumArray") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.enumarray"
+        specFile = File(rootDir, "testCases/enumArray/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/enumArray/models/")
+        contextSpec {
+            packageName = "com.diconium.mobile.tools.kebabkrafter.sample"
+            className = "CallScope"
+            factoryName = "from"
+        }
+    }
     create("caseAcronym") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.server.case.acronym"
         specFile = File(rootDir, "testCases/acronym/swagger.yml")
@@ -278,6 +288,11 @@ ktorClient {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.maps"
         specFile = File(rootDir, "testCases/maps/swagger.yml")
         schemasFolder = File(rootDir, "testCases/maps/models/")
+    }
+    create("caseEnumArray") {
+        packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.enumarray"
+        specFile = File(rootDir, "testCases/enumArray/swagger.yml")
+        schemasFolder = File(rootDir, "testCases/enumArray/models/")
     }
     create("caseAcronym") {
         packageName = "com.diconium.mobile.tools.kebabkrafter.sample.gen.client.case.acronym"

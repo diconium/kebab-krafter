@@ -135,17 +135,31 @@ internal class DataClassGenerator(
             )
             .addTypes(
                 model.fields.mapNotNull { jsonSpecField ->
-                    when (jsonSpecField.type) {
-                        is ConcreteJsonType -> concreteModel(jsonSpecField.type, nextParents)
-                        is EnumJsonType -> enumModel(jsonSpecField.type)
-                        is SealedJsonType -> sealedModel(jsonSpecField.type)
-                        is DefJsonSpec -> null
-                        is PrimitiveJsonSpec -> null
-                        is RefJsonSpec -> null
-                        is SealedJsonType.JsonDiscriminator -> null
-                    }?.build()
+                    nestedModel(jsonSpecField.type, nextParents)?.build()
                 },
             )
+    }
+
+    /**
+     * Types declared in place inside a field must be generated as nested classes of the parent.
+     * Arrays and maps don't declare a type themselves, but their items/values might
+     * (e.g. `"type": "array", "items": { "enum": [...] }`), so we look through them.
+     */
+    private fun nestedModel(type: BaseJsonSpec, parents: List<String>): TypeSpec.Builder? = when (type) {
+        is ConcreteJsonType -> concreteModel(type, parents)
+        is EnumJsonType -> enumModel(type)
+        is SealedJsonType -> sealedModel(type)
+        is PrimitiveJsonSpec -> when (type.primitive) {
+            is Primitive.ArraySpec -> nestedModel(type.primitive.type, parents)
+            is Primitive.MapSpec -> nestedModel(type.primitive.type, parents)
+            // in-place enum keys are registered in `$defs` by the parser and generated with the root definitions
+            is Primitive.EnumMapSpec -> nestedModel(type.primitive.valueType, parents)
+            else -> null
+        }
+
+        is DefJsonSpec -> null
+        is RefJsonSpec -> null
+        is SealedJsonType.JsonDiscriminator -> null
     }
 
     private fun sealedModel(model: SealedJsonType): TypeSpec.Builder {
