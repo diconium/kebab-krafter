@@ -66,7 +66,7 @@ ktorClient {
 
 	create("petStore") {
 		packageName = "io.github.budius.kebabkrafterandroid.gen.android.petstore"
-		specFile = File(rootDir, "../sample/src/main/resources/petstore/swagger.yml")
-		schemasFolder = File(rootDir, "../sample/src/main/resources/petstore/models")
+		specFile = File(rootDir, "../sample-jvm/src/main/resources/petstore/swagger.yml")
+		schemasFolder = File(rootDir, "../sample-jvm/src/main/resources/petstore/models")
 	}
 }

@@ -54,8 +54,8 @@ ktorClient {
 
 	create("petStore") {
 		packageName = "io.github.budius.kraftkebabandroidlibary.gen.androidLib.petstore"
-		specFile = File(rootDir, "../sample/src/main/resources/petstore/swagger.yml")
-		schemasFolder = File(rootDir, "../sample/src/main/resources/petstore/models")
+		specFile = File(rootDir, "../sample-jvm/src/main/resources/petstore/swagger.yml")
+		schemasFolder = File(rootDir, "../sample-jvm/src/main/resources/petstore/models")
 
 		// making this false and writting tests to verify they're indeed not parcelable
 		// in the app, this is true and the tests verify they're parcelable
