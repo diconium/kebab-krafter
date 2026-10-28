@@ -22,16 +22,28 @@ fun applyGenerateKtorServer(target: Project) {
         }
     }
 
-    val serviceLocatorTask = target.tasks.register(
-        "generateKtorServerServiceLocator",
-        KtorServerServiceLocatorTask::class.java,
-    ) { task ->
-        val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/serviceLocator/")
-        task.outputFolder.convention(output)
+//    val serviceLocatorTask = target.tasks.register(
+//        "generateKtorServerServiceLocator",
+//        KtorServerServiceLocatorTask::class.java,
+//    ) { task ->
+//        val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/serviceLocator/")
+//        task.outputFolder.convention(output)
+//    }
+
+    // only created once a server service is defined
+    val serviceLocatorTask by lazy {
+        val registered = target.tasks.register(
+            "generateKtorServerServiceLocator",
+            KtorServerServiceLocatorTask::class.java,
+        ) { task ->
+            val output = target.layout.buildDirectory.dir("generated/sources/ktorServer/serviceLocator/")
+            task.outputFolder.convention(output)
+        }
+        target.registerTask(registered)
+        registered
     }
 
-    // wire task output to the main source set
-    target.registerTask(serviceLocatorTask)
+//    target.registerTask(serviceLocatorTask)
 
     ktorServer.services.whenObjectAdded { ktorServerInput ->
 
@@ -44,13 +56,16 @@ fun applyGenerateKtorServer(target: Project) {
         ktorServerInput.transformerSpec.ktorTransformer.convention(DefaultKtorTransformer::class.java)
         ktorServerInput.installFunction.convention("install${ktorServerInput.name.toPascalCase()}GeneratedRoutes")
 
+        // forces registration and source wiring of the service locator now
+        val locator = serviceLocatorTask
+
         // register task(s)
         val taskName = "generate${ktorServerInput.name.toPascalCase()}KtorServer"
         val task = target.tasks.register(taskName, GenerateKtorServerTask::class.java) {
             // it.group = "generator"
             it.ktorServerInput.set(ktorServerInput)
             it.log.set(ktorServer.log)
-            it.dependsOn(serviceLocatorTask)
+            it.dependsOn(locator)
         }
         baseTask.configure { it.dependsOn(task) }
 

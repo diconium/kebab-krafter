@@ -7,6 +7,7 @@ import com.diconium.mobile.tools.kebabkrafter.KtorController
 import com.diconium.mobile.tools.kebabkrafter.KtorTransformer
 import com.diconium.mobile.tools.kebabkrafter.models.Endpoint
 import com.diconium.mobile.tools.kebabkrafter.plugin.client.GenerateKtorClientTask
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.ExtensionAware
@@ -40,6 +41,16 @@ internal fun Project.registerTask(task: Any) {
                 sourceSet.kotlin.srcDirs(task)
             }
         }
+    }
+
+    pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+        val kotlin = extensions.getByName("kotlin")
+        val sourceSets = kotlin.javaClass.getMethod("getSourceSets").invoke(kotlin)
+            as NamedDomainObjectContainer<*>
+        val commonMain = sourceSets.getByName("commonMain")
+        val dirs = commonMain.javaClass.getMethod("getKotlin").invoke(commonMain)
+            as SourceDirectorySet
+        dirs.srcDir(task)
     }
 }
 
